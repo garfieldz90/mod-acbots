@@ -33,7 +33,7 @@ class Trigger : public AiNamedObject
 
     protected:
 		int32 checkInterval;
-		uint32 lastCheckTime;
+		time_t lastCheckTime;
 };
 
 class TriggerNode

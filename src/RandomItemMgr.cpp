@@ -3,7 +3,6 @@
  */
 
 #include "RandomItemMgr.h"
-#include "ItemTemplate.h"
 #include "LootValues.h"
 #include "Playerbots.h"
 
@@ -153,8 +152,7 @@ RandomItemMgr::RandomItemMgr()
 void RandomItemMgr::Init()
 {
     BuildItemInfoCache();
-    // BuildEquipCache();
-    BuildEquipCacheNew();
+    BuildEquipCache();
     BuildAmmoCache();
     BuildPotionCache();
     BuildFoodCache();
@@ -287,7 +285,7 @@ void RandomItemMgr::BuildRandomItemCache()
                     if (!proto)
                         continue;
 
-                    LOG_DEBUG("playerbots", "        [{}] {}", itemId, proto->Name1.c_str());
+                    LOG_INFO("playerbots", "        [{}] {}", itemId, proto->Name1.c_str());
                 }
             }
         }
@@ -334,29 +332,30 @@ bool RandomItemMgr::CanEquipItem(BotEquipKey key, ItemTemplate const* proto)
         requiredLevel = key.level;
 
     uint32 level = key.level;
-    
     uint32 delta = 2;
     if (level < 15)
-        delta = 15;
+        delta = urand(7, 15);
+    else if (proto->Class == ITEM_CLASS_WEAPON || proto->SubClass == ITEM_SUBCLASS_ARMOR_SHIELD)
+        delta = urand(2, 3);
+    else if (!(level % 10) || (level % 10) == 9)
+        delta = 2;
     else if (level < 40)
-        delta = 10; //urand(5, 10);
+        delta = urand(5, 10);
     else if (level < 60)
-        delta = 6; // urand(3, 7);
+        delta = urand(3, 7);
     else if (level < 70)
-        delta = 9; // urand(2, 5);
+        delta = urand(2, 5);
     else if (level < 80)
-        delta = 9; // urand(2, 4);
-    else if (level == 80)
-        delta = 2; // urand(2, 4);
+        delta = urand(2, 4);
 
     if (key.quality > ITEM_QUALITY_NORMAL && (requiredLevel > level || requiredLevel < level - delta))
         return false;
 
-    // for (uint32 gap = 60; gap <= 80; gap += 10)
-    // {
-    //     if (level > gap && requiredLevel <= gap)
-    //         return false;
-    // }
+    for (uint32 gap = 60; gap <= 80; gap += 10)
+    {
+        if (level > gap && requiredLevel <= gap)
+            return false;
+    }
 
     return true;
 }
@@ -440,11 +439,6 @@ bool RandomItemMgr::CheckItemStats(uint8 clazz, uint8 sp, uint8 ap, uint8 tank)
     }
 
     return sp || ap || tank;
-}
-
-std::vector<uint32> RandomItemMgr::GetCachedEquipments(uint32 requiredLevel, uint32 inventoryType)
-{
-    return equipCacheNew[requiredLevel][inventoryType];
 }
 
 bool RandomItemMgr::ShouldEquipArmorForSpec(uint8 playerclass, uint8 spec, ItemTemplate const* proto)
@@ -952,16 +946,9 @@ void RandomItemMgr::BuildItemInfoCache()
             strstr(proto->Name1.c_str(), "Monster ") ||
             strstr(proto->Name1.c_str(), "[PH]") ||
             strstr(proto->Name1.c_str(), "(OLD)")
-            ) 
-        {
-            itemForTest.insert(proto->ItemId);
+            )
             continue;
-        }
 
-        if (proto->Flags & ITEM_FLAG_DEPRECATED) {
-            itemForTest.insert(proto->ItemId);
-            continue;
-        }
         // skip items with rank/rep requirements
         /*if (proto->RequiredHonorRank > 0 ||
             proto->RequiredSkillRank > 0 ||
@@ -1039,7 +1026,7 @@ void RandomItemMgr::BuildItemInfoCache()
                 //statWeight.weight = statW;
                 // save item statWeight into ItemCache
                 cacheInfo.weights[statWeight.id] = statWeight.weight;
-                LOG_DEBUG("playerbots", "Item: {}, weight: {}, class: {}, spec: {}", proto->ItemId, statWeight.weight, clazz, m_weightScales[clazz][spec].info.name);
+                LOG_INFO("playerbots", "Item: {}, weight: {}, class: {}, spec: {}", proto->ItemId, statWeight.weight, clazz, m_weightScales[clazz][spec].info.name);
             }
         }
 
@@ -1064,7 +1051,7 @@ void RandomItemMgr::BuildItemInfoCache()
         }
 
         if (cacheInfo.team < TEAM_NEUTRAL)
-            LOG_DEBUG("playerbots", "Item: {}, team (item): {}", proto->ItemId, cacheInfo.team == TEAM_ALLIANCE ? "Alliance" : "Horde");
+            LOG_INFO("playerbots", "Item: {}, team (item): {}", proto->ItemId, cacheInfo.team == TEAM_ALLIANCE ? "Alliance" : "Horde");
 
         // check min level
         if (proto->RequiredLevel)
@@ -1075,7 +1062,7 @@ void RandomItemMgr::BuildItemInfoCache()
         if (proto->Flags & ITEM_FLAG_NO_DISENCHANT)
         {
             cacheInfo.source = ITEM_SOURCE_PVP;
-            LOG_DEBUG("playerbots", "Item: {}, source: PvP Reward", proto->ItemId);
+            LOG_INFO("playerbots", "Item: {}, source: PvP Reward", proto->ItemId);
         }
 
         // check quests
@@ -1118,13 +1105,13 @@ void RandomItemMgr::BuildItemInfoCache()
                 else if (isHorde)
                     cacheInfo.team = TEAM_HORDE;
 
-                LOG_DEBUG("playerbots", "Item: {}, team (quest): {}", proto->ItemId, cacheInfo.team == TEAM_ALLIANCE ? "Alliance" : cacheInfo.team == TEAM_HORDE ? "Horde" : "Both");
-                LOG_DEBUG("playerbots", "Item: {}, source: quest {}, minlevel: {}", proto->ItemId, cacheInfo.sourceId, cacheInfo.minLevel);
+                LOG_INFO("playerbots", "Item: {}, team (quest): {}", proto->ItemId, cacheInfo.team == TEAM_ALLIANCE ? "Alliance" : cacheInfo.team == TEAM_HORDE ? "Horde" : "Both");
+                LOG_INFO("playerbots", "Item: {}, source: quest {}, minlevel: {}", proto->ItemId, cacheInfo.sourceId, cacheInfo.minLevel);
             }
         }
 
         if (cacheInfo.minLevel)
-            LOG_DEBUG("playerbots", "Item: {}, minlevel: {}", proto->ItemId, cacheInfo.minLevel);
+            LOG_INFO("playerbots", "Item: {}, minlevel: {}", proto->ItemId, cacheInfo.minLevel);
 
         // check vendors
         if (cacheInfo.source == ITEM_SOURCE_NONE)
@@ -1134,7 +1121,7 @@ void RandomItemMgr::BuildItemInfoCache()
                 if (proto->ItemId == *i)
                 {
                     cacheInfo.source = ITEM_SOURCE_VENDOR;
-                    LOG_DEBUG("playerbots", "Item: {} source: vendor", proto->ItemId);
+                    LOG_INFO("playerbots", "Item: {} source: vendor", proto->ItemId);
                     break;
                 }
             }
@@ -1162,12 +1149,12 @@ void RandomItemMgr::BuildItemInfoCache()
                 {
                     cacheInfo.source = ITEM_SOURCE_DROP;
                     cacheInfo.sourceId = creatures.front();
-                    LOG_DEBUG("playerbots", "Item: {}, source: creature drop, ID: {}", proto->ItemId, creatures.front());
+                    LOG_INFO("playerbots", "Item: {}, source: creature drop, ID: {}", proto->ItemId, creatures.front());
                 }
                 else
                 {
                     cacheInfo.source = ITEM_SOURCE_DROP;
-                    LOG_DEBUG("playerbots", "Item: {}, source: creatures drop, number: {}", proto->ItemId, creatures.size());
+                    LOG_INFO("playerbots", "Item: {}, source: creatures drop, number: {}", proto->ItemId, creatures.size());
                 }
             }
         }
@@ -1561,9 +1548,9 @@ uint32 RandomItemMgr::CalculateSingleStatWeight(uint8 playerclass, uint8 spec, s
         if (stat == i->stat)
         {
             statWeight = i->weight * value;
-            // if (statWeight)
-            //     LOG_INFO("playerbots", "stat: {}, val: {}, weight: {}, total: {}, class: {}, spec: {}",
-            //         stat, value, i->weight, statWeight, playerclass, m_weightScales[playerclass][spec].info.name);
+            if (statWeight)
+                LOG_INFO("playerbots", "stat: {}, val: {}, weight: {}, total: {}, class: {}, spec: {}",
+                    stat, value, i->weight, statWeight, playerclass, m_weightScales[playerclass][spec].info.name);
             return statWeight;
         }
     }
@@ -2134,7 +2121,7 @@ void RandomItemMgr::BuildEquipCache()
 
                         equipCache[key] = items;
 
-                        LOG_DEBUG("playerbots", "Equipment cache for class: {}, level {}, slot {}, quality {}: {} items",
+                        LOG_INFO("playerbots", "Equipment cache for class: {}, level {}, slot {}, quality {}: {} items",
                                 class_, level, slot, quality, items.size());
                     }
                 }
@@ -2145,55 +2132,10 @@ void RandomItemMgr::BuildEquipCache()
     }
 }
 
-void RandomItemMgr::BuildEquipCacheNew()
-{
-    LOG_INFO("playerbots", "Loading equipments cache...");
-    ItemTemplateContainer const* itemTemplates = sObjectMgr->GetItemTemplateStore();
-    for (auto const& itr : *itemTemplates)
-    {
-        ItemTemplate const* proto = &itr.second;
-        if (!proto)
-            continue;
-        uint32 itemId = proto->ItemId;
-        if (IsTestItem(itemId)) {
-            continue;
-        }
-        equipCacheNew[proto->RequiredLevel][proto->InventoryType].push_back(itemId);
-    }
-}
-
 RandomItemList RandomItemMgr::Query(uint32 level, uint8 clazz, uint8 slot, uint32 quality)
 {
-    // return equipCache[key];
     BotEquipKey key(level, clazz, slot, quality);
-    RandomItemList items;
-    ItemTemplateContainer const* itemTemplates = sObjectMgr->GetItemTemplateStore();
-    for (auto const& itr : *itemTemplates)
-    {
-        ItemTemplate const* proto = &itr.second;
-        if (!proto)
-            continue;
-
-        if (proto->Class != ITEM_CLASS_WEAPON && proto->Class != ITEM_CLASS_ARMOR && proto->Class != ITEM_CLASS_CONTAINER && proto->Class != ITEM_CLASS_PROJECTILE)
-            continue;
-
-        if (!CanEquipItem(key, proto))
-            continue;
-
-        if (proto->Class == ITEM_CLASS_ARMOR && (slot == EQUIPMENT_SLOT_HEAD || slot == EQUIPMENT_SLOT_SHOULDERS || slot == EQUIPMENT_SLOT_CHEST ||
-            slot == EQUIPMENT_SLOT_WAIST || slot == EQUIPMENT_SLOT_LEGS || slot == EQUIPMENT_SLOT_FEET || slot == EQUIPMENT_SLOT_WRISTS ||
-            slot == EQUIPMENT_SLOT_HANDS) && !CanEquipArmor(key.clazz, key.level, proto))
-            continue;
-
-        if (proto->Class == ITEM_CLASS_WEAPON && !CanEquipWeapon(key.clazz, proto))
-            continue;
-
-        if (slot == EQUIPMENT_SLOT_OFFHAND && key.clazz == CLASS_ROGUE && proto->Class != ITEM_CLASS_WEAPON)
-            continue;
-
-        items.push_back(itr.first);
-    }
-    return items;
+    return equipCache[key];
 }
 
 void RandomItemMgr::BuildAmmoCache()
@@ -2205,25 +2147,19 @@ void RandomItemMgr::BuildAmmoCache()
     LOG_INFO("server.loading", "Building ammo cache for {} levels", maxLevel);
 
     uint32 counter = 0;
-    for (uint32 level = 1; level <= maxLevel; level += 1)
+    for (uint32 level = 1; level <= maxLevel + 1; level += 10)
     {
         for (uint32 subClass = ITEM_SUBCLASS_ARROW; subClass <= ITEM_SUBCLASS_BULLET; subClass++)
         {
-            QueryResult results = WorldDatabase.Query("SELECT entry, Flags FROM item_template WHERE class = {} AND subclass = {} AND RequiredLevel <= {} AND stackable = 1000 "
-                "ORDER BY RequiredLevel DESC", ITEM_CLASS_PROJECTILE, subClass, level);
+            QueryResult results = WorldDatabase.Query("SELECT entry FROM item_template WHERE class = {} AND subclass = {} AND RequiredLevel <= {} "
+                "AND quality = {} ORDER BY RequiredLevel DESC", ITEM_CLASS_PROJECTILE, subClass, level, ITEM_QUALITY_NORMAL);
             if (!results)
-                continue;
-            do {
-                Field* fields = results->Fetch();
-                uint32 entry = fields[0].Get<uint32>();
-                uint32 flags = fields[1].Get<uint32>();
-                if (flags & ITEM_FLAG_DEPRECATED) {
-                    continue;
-                }
-                ammoCache[level][subClass] = entry;
-                ++counter;
-                break;
-            } while (results->NextRow());
+                return;
+
+            Field* fields = results->Fetch();
+            uint32 entry = fields[0].Get<uint32>();
+            ammoCache[level / 10][subClass] = entry;
+            ++counter;
         }
     }
 
@@ -2232,7 +2168,7 @@ void RandomItemMgr::BuildAmmoCache()
 
 uint32 RandomItemMgr::GetAmmo(uint32 level, uint32 subClass)
 {
-    return ammoCache[level][subClass];
+    return ammoCache[(level - 1) / 10][subClass];
 }
 
 void RandomItemMgr::BuildPotionCache()
@@ -2302,7 +2238,7 @@ void RandomItemMgr::BuildPotionCache()
             uint32 size = potionCache[level / 10][effect].size();
             ++counter;
 
-            LOG_DEBUG("server.loading", "Potion cache for level={}, effect={}: {} items", level, effect, size);
+            LOG_INFO("server.loading", "Potion cache for level={}, effect={}: {} items", level, effect, size);
         }
     }
 
@@ -2362,7 +2298,7 @@ void RandomItemMgr::BuildFoodCache()
             uint32 category = categories[i];
             uint32 size = foodCache[level / 10][category].size();
             ++counter;
-            LOG_DEBUG("server.loading", "Food cache for level={}, category={}: {} items", level, category, size);
+            LOG_INFO("server.loading", "Food cache for level={}, category={}: {} items", level, category, size);
         }
     }
 
@@ -2478,7 +2414,7 @@ void RandomItemMgr::BuildTradeCache()
     for (uint32 level = 1; level <= maxLevel + 1; level += 10)
     {
         uint32 size = tradeCache[level / 10].size();
-        LOG_DEBUG("server.loading", "Trade cache for level={}: {} items", level, size);
+        LOG_INFO("server.loading", "Trade cache for level={}: {} items", level, size);
         ++counter;
     }
 

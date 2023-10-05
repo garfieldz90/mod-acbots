@@ -29,59 +29,81 @@ inline bool compareByHealth(Unit const* u1, Unit const* u2)
 
 Unit* PartyMemberToHeal::Calculate()
 {
-
     IsTargetOfHealingSpell predicate;
+    std::vector<Unit*> needHeals;
+    std::vector<Unit*> tankTargets;
+
+    if (bot->GetTarget())
+    {
+        Unit* target = botAI->GetUnit(bot->GetTarget());
+        if (target && target->IsFriendlyTo(bot) && target->HealthBelowPct(100))
+            needHeals.push_back(target);
+    }
 
     Group* group = bot->GetGroup();
-    if (!group)
-        return bot;
+    if (!group && needHeals.empty())
+        return nullptr;
 
-    bool isRaid = bot->GetGroup()->isRaidGroup();
-    MinValueCalculator calc(100);
-    
-    for (GroupReference *gref = group->GetFirstMember(); gref; gref = gref->next())
+    if (group)
     {
-        Player* player = gref->GetSource();
-        if (player && Check(player) && player->IsAlive()) {
+        for (GroupReference* gref = group->GetFirstMember(); gref; gref = gref->next())
+        {
+            Player* player = gref->GetSource();
+            if (!Check(player) || !player->IsAlive())
+                continue;
+
+            // do not heal dueling members
+            if (player->duel && player->duel->Opponent)
+                continue;
+
             uint8 health = player->GetHealthPct();
-            if (isRaid || health < sPlayerbotAIConfig->mediumHealth || !IsTargetOfSpellCast(player, predicate)) {
-                if (player->GetDistance2d(bot) > sPlayerbotAIConfig->healDistance) {
-                    calc.probe(health + 30, player);
-                } else {
-                    calc.probe(health + player->GetDistance2d(bot) / 10, player);
-                }
-            }
-        }
+            if (health < sPlayerbotAIConfig->almostFullHealth || !IsTargetOfSpellCast(player, predicate))
+                needHeals.push_back(player);
 
-        Pet* pet = player->GetPet();
-        if (pet && Check(pet) && pet->IsAlive()) {
-            uint8 health = ((Unit*)pet)->GetHealthPct();
-            if (isRaid || health < sPlayerbotAIConfig->mediumHealth)
-                calc.probe(health + 30, pet);
-        }
-
-        Unit* charm = player->GetCharm();
-        if (charm && Check(charm) && charm->IsAlive()) {
-            uint8 health = charm->GetHealthPct();
-            if (isRaid || health < sPlayerbotAIConfig->mediumHealth)
-                calc.probe(health, charm);
+            if (botAI->IsTank(player) && bot->IsInSameRaidWith(player))
+                tankTargets.push_back(player);
         }
     }
-    return (Unit*)calc.param;
+
+    if (needHeals.empty() && tankTargets.empty())
+        return nullptr;
+
+    if (needHeals.empty() && !tankTargets.empty())
+        needHeals = tankTargets;
+
+    std::sort(needHeals.begin(), needHeals.end(), compareByHealth);
+
+    uint32 healerIndex = 0;
+    if (group)
+    {
+        for (GroupReference* gref = group->GetFirstMember(); gref; gref = gref->next())
+        {
+            Player* player = gref->GetSource();
+            if (!player) continue;
+            if (player == bot) break;
+            if (botAI->IsHeal(player))
+            {
+                float percent = (float)player->GetPower(POWER_MANA) / (float)player->GetMaxPower(POWER_MANA) * 100.0;
+                if (percent > sPlayerbotAIConfig->lowMana)
+                    healerIndex++;
+            }
+        }
+    }
+    else
+        healerIndex = 1;
+
+    healerIndex = healerIndex % needHeals.size();
+    return needHeals[healerIndex];
 }
 
 bool PartyMemberToHeal::Check(Unit* player)
 {
-    // return player && player != bot && player->GetMapId() == bot->GetMapId() && player->IsInWorld() &&
-    //     sServerFacade->GetDistance2d(bot, player) < (player->IsPlayer() && botAI->IsTank((Player*)player) ? 50.0f : 40.0f);
-    return player->GetMapId() == bot->GetMapId() &&
-        bot->GetDistance2d(player) < sPlayerbotAIConfig->healDistance * 2 &&
-        bot->IsWithinLOS(player->GetPositionX(), player->GetPositionY(), player->GetPositionZ());
+    return player && player != bot && player->GetMapId() == bot->GetMapId() && player->IsInWorld() &&
+        sServerFacade->GetDistance2d(bot, player) < (player->IsPlayer() && botAI->IsTank((Player*)player) ? 50.0f : 40.0f);
 }
 
 Unit* PartyMemberToProtect::Calculate()
 {
-    return nullptr;
     Group* group = bot->GetGroup();
     if (!group)
         return nullptr;

@@ -15,7 +15,7 @@ class GuardStrategy : public NonCombatStrategy
         GuardStrategy(PlayerbotAI* botAI) : NonCombatStrategy(botAI) { }
 
         std::string const getName() override { return "guard"; }
-        NextAction** getDefaultActions() override;
+        NextAction** getDefaultActions();
         void InitTriggers(std::vector<TriggerNode*>& triggers) override;
 };
 

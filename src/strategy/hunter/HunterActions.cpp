@@ -4,12 +4,11 @@
 
 #include "HunterActions.h"
 #include "Event.h"
-#include "GenericSpellActions.h"
 #include "Playerbots.h"
 
-bool CastHuntersMarkAction::isUseful()
+bool CastSerpentStingAction::isUseful()
 {
-    return CastDebuffSpellAction::isUseful();
+    return AI_VALUE2(uint8, "health", "current target") > 50;
 }
 
 bool CastViperStingAction::isUseful()
@@ -41,7 +40,7 @@ bool CastAutoShotAction::isUseful()
     if (botAI->IsInVehicle() && !botAI->IsInVehicle(false, false, true))
         return false;
 
-    return AI_VALUE(uint32, "active spell") != AI_VALUE2(uint32, "spell id", getName());
+    return botAI->HasStrategy("ranged", BOT_STATE_COMBAT) && AI_VALUE(uint32, "active spell") != AI_VALUE2(uint32, "spell id", getName());
 }
 
 Value<Unit*>* CastScareBeastCcAction::GetTargetValue()

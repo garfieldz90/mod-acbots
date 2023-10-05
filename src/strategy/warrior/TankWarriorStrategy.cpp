@@ -19,7 +19,6 @@ class TankWarriorStrategyActionNodeFactory : public NamedObjectFactory<ActionNod
             creators["heroic throw on snare target"] = &heroic_throw_on_snare_target;
             creators["heroic throw taunt"] = &heroic_throw_taunt;
             creators["taunt"] = &taunt;
-            creators["taunt spell"] = &taunt;
         }
 
     private:
@@ -42,11 +41,7 @@ TankWarriorStrategy::TankWarriorStrategy(PlayerbotAI* botAI) : GenericWarriorStr
 
 NextAction** TankWarriorStrategy::getDefaultActions()
 {
-    return NextAction::array(0, 
-        new NextAction("devastate", ACTION_NORMAL + 2), 
-        new NextAction("revenge", ACTION_NORMAL + 1), 
-        new NextAction("melee", ACTION_NORMAL), 
-        NULL);
+    return NextAction::array(0, new NextAction("melee", ACTION_NORMAL), nullptr);
 }
 
 void TankWarriorStrategy::InitTriggers(std::vector<TriggerNode*>& triggers)
@@ -79,6 +74,5 @@ void TankWarriorStrategy::InitTriggers(std::vector<TriggerNode*>& triggers)
     triggers.push_back(new TriggerNode("victory rush", NextAction::array(0, new NextAction("victory rush", ACTION_INTERRUPT), nullptr)));
     triggers.push_back(new TriggerNode("sword and board", NextAction::array(0, new NextAction("shield slam", ACTION_INTERRUPT), nullptr)));
     triggers.push_back(new TriggerNode("rend", NextAction::array(0, new NextAction("rend", ACTION_NORMAL + 1), nullptr)));
-    triggers.push_back(new TriggerNode("rend on attacker", NextAction::array(0, new NextAction("rend on attacker", ACTION_NORMAL + 1), nullptr)));
     triggers.push_back(new TriggerNode("protect party member", NextAction::array(0, new NextAction("intervene", ACTION_EMERGENCY), nullptr)));
 }

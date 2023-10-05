@@ -13,7 +13,6 @@ class ArcaneMageStrategyActionNodeFactory : public NamedObjectFactory<ActionNode
             creators["arcane blast"] = &arcane_blast;
             creators["arcane barrage"] = &arcane_barrage;
             creators["arcane missiles"] = &arcane_missiles;
-            // creators["firebolt"] = &firebolt;
         }
 
     private:
@@ -37,17 +36,9 @@ class ArcaneMageStrategyActionNodeFactory : public NamedObjectFactory<ActionNode
         {
             return new ActionNode ("arcane missiles",
                 /*P*/ nullptr,
-                /*A*/ NextAction::array(0, new NextAction("fireball"), nullptr),
+                /*A*/ NextAction::array(0, new NextAction("shoot"), nullptr),
                 /*C*/ nullptr);
         }
-
-        // static ActionNode* firebolt([[maybe_unused]] PlayerbotAI* botAI)
-        // {
-        //     return new ActionNode ("firebolt",
-        //         /*P*/ nullptr,
-        //         /*A*/ NextAction::array(0, new NextAction("shoot"), nullptr),
-        //         /*C*/ nullptr);
-        // }
 };
 
 ArcaneMageStrategy::ArcaneMageStrategy(PlayerbotAI* botAI) : GenericMageStrategy(botAI)
@@ -57,24 +48,13 @@ ArcaneMageStrategy::ArcaneMageStrategy(PlayerbotAI* botAI) : GenericMageStrategy
 
 NextAction** ArcaneMageStrategy::getDefaultActions()
 {
-    return NextAction::array(0, new NextAction("arcane blast", 10.0f), NULL);
+    return NextAction::array(0, new NextAction("arcane barrage", 10.0f), nullptr);
 }
 
 void ArcaneMageStrategy::InitTriggers(std::vector<TriggerNode*>& triggers)
 {
     GenericMageStrategy::InitTriggers(triggers);
 
-    triggers.push_back(new TriggerNode("arcane blast stack", NextAction::array(0, new NextAction("arcane missiles", 15.0f), NULL)));
-}
-
-void ArcaneMageAoeStrategy::InitTriggers(std::vector<TriggerNode*>& triggers)
-{
-	// triggers.push_back(new TriggerNode(
-	// 	"high aoe",
-	// 	NextAction::array(0, new NextAction("arcane explosion", 39.0f), NULL)));
-
-    triggers.push_back(new TriggerNode(
-        "medium aoe",
-        NextAction::array(0, new NextAction("blizzard", 40.0f), NULL)));
-
+    triggers.push_back(new TriggerNode("arcane blast", NextAction::array(0, new NextAction("arcane blast", 15.0f), nullptr)));
+    triggers.push_back(new TriggerNode("missile barrage", NextAction::array(0, new NextAction("arcane missiles", 15.0f), nullptr)));
 }

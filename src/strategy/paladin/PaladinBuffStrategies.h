@@ -54,15 +54,6 @@ class PaladinBuffAoeStrategy : public Strategy
 		std::string const getName() override { return "baoe"; }
 };
 
-class PaladinBuffCastStrategy : public Strategy
-{
-	public:
-	    PaladinBuffCastStrategy(PlayerbotAI* botAI) : Strategy(botAI) { }
-
-		void InitTriggers(std::vector<TriggerNode*>& triggers) override;
-		std::string const getName() override { return "bcast"; }
-};
-
 class PaladinBuffThreatStrategy : public Strategy
 {
 	public:

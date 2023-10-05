@@ -6,10 +6,10 @@
 #include "Playerbots.h"
 #include "ServerFacade.h"
 
-// bool AdrenalineRushTrigger::isPossible()
-// {
-//     return !botAI->HasAura("stealth", bot);
-// }
+bool AdrenalineRushTrigger::isPossible()
+{
+    return !botAI->HasAura("stealth", bot);
+}
 
 bool UnstealthTrigger::IsActive()
 {
@@ -91,22 +91,4 @@ bool SprintTrigger::IsActive()
     return  AI_VALUE2(bool, "moving", "self target") && (AI_VALUE2(bool, "moving", "dps target") || AI_VALUE2(bool, "moving", "enemy player target")) &&
         targeted && (sServerFacade->IsDistanceGreaterThan(AI_VALUE2(float, "distance", "dps target"), distance) ||
             sServerFacade->IsDistanceGreaterThan(AI_VALUE2(float, "distance", "enemy player target"), distance));
-}
-
-bool ExposeArmorTrigger::IsActive() {
-    return DebuffTrigger::IsActive() && !botAI->HasAura("sunder armor", bot, false, false, -1, true) && AI_VALUE2(uint8, "combo", "current target") <= 3;
-}
-
-bool MainHandWeaponNoEnchantTrigger::IsActive() {
-    Item* const itemForSpell = bot->GetItemByPos( INVENTORY_SLOT_BAG_0, EQUIPMENT_SLOT_MAINHAND );
-    if (!itemForSpell || itemForSpell->GetEnchantmentId(TEMP_ENCHANTMENT_SLOT))
-        return false;
-    return true;
-}
-
-bool OffHandWeaponNoEnchantTrigger::IsActive() {
-    Item* const itemForSpell = bot->GetItemByPos( INVENTORY_SLOT_BAG_0, EQUIPMENT_SLOT_OFFHAND );
-    if (!itemForSpell || itemForSpell->GetEnchantmentId(TEMP_ENCHANTMENT_SLOT))
-        return false;
-    return true;
 }

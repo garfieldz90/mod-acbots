@@ -7,7 +7,6 @@
 #include "Event.h"
 #include "ItemUsageValue.h"
 #include "Playerbots.h"
-#include "ServerFacade.h"
 
 uint32 FindLastSeparator(std::string const text, std::string const sep)
 {
@@ -100,7 +99,7 @@ bool CastCustomSpellAction::Execute(Event event)
 
     if (target != bot && !bot->HasInArc(CAST_ANGLE_IN_FRONT, target, sPlayerbotAIConfig->sightDistance))
     {
-        sServerFacade->SetFacingTo(bot, target);
+        bot->SetFacingToObject(target);
         botAI->SetNextCheckDelay(sPlayerbotAIConfig->globalCoolDown);
 
         msg << "cast " << text;

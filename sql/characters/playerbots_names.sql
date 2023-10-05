@@ -10689,5 +10689,3 @@ INSERT INTO `playerbots_names` VALUES
 
 DELETE FROM `playerbots_names` WHERE LENGTH(`name`) > 12;
 ALTER TABLE `playerbots_names` MODIFY `name` varchar(12);
-
-ALTER TABLE `playerbots_names` ADD in_use BIT default 0;

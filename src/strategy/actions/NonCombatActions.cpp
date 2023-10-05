@@ -17,19 +17,19 @@ bool DrinkAction::Execute(Event event)
 
     if (sPlayerbotAIConfig->freeFood)
     {
-        
-        // if (bot->IsNonMeleeSpellCast(true))
-        //     return false;
+        if (bot->IsNonMeleeSpellCast(true))
+            return false;
 
         bot->ClearUnitState(UNIT_STATE_CHASE);
         bot->ClearUnitState(UNIT_STATE_FOLLOW);
 
         if (bot->isMoving())
         {
-            // bot->StopMoving();
-            // botAI->SetNextCheckDelay(sPlayerbotAIConfig->globalCoolDown);
+            bot->StopMoving();
+            botAI->SetNextCheckDelay(sPlayerbotAIConfig->globalCoolDown);
             return false;
         }
+
         bot->SetStandState(UNIT_STAND_STATE_SIT);
         botAI->InterruptSpell();
 
@@ -43,11 +43,10 @@ bool DrinkAction::Execute(Event event)
         else
             delay = 20000.0f * (100 - p) / 100.0f;
 
+        botAI->CastSpell(24707, bot);
         botAI->SetNextCheckDelay(delay);
-        
-        bot->AddAura(24707, bot);
+
         return true;
-        // return botAI->CastSpell(24707, bot);
     }
 
     return UseItemAction::Execute(event);
@@ -60,7 +59,7 @@ bool DrinkAction::isUseful()
 
 bool DrinkAction::isPossible()
 {
-    return !bot->IsInCombat() && (sPlayerbotAIConfig->freeFood || UseItemAction::isPossible());
+    return sPlayerbotAIConfig->freeFood || UseItemAction::isPossible();
 }
 
 bool EatAction::Execute(Event event)
@@ -70,16 +69,16 @@ bool EatAction::Execute(Event event)
 
     if (sPlayerbotAIConfig->freeFood)
     {
-        // if (bot->IsNonMeleeSpellCast(true))
-        //     return false;
+        if (bot->IsNonMeleeSpellCast(true))
+            return false;
 
         bot->ClearUnitState(UNIT_STATE_CHASE);
         bot->ClearUnitState(UNIT_STATE_FOLLOW);
 
         if (bot->isMoving())
         {
-            // bot->StopMoving();
-            // botAI->SetNextCheckDelay(sPlayerbotAIConfig->globalCoolDown);
+            bot->StopMoving();
+            botAI->SetNextCheckDelay(sPlayerbotAIConfig->globalCoolDown);
             return false;
         }
 
@@ -96,9 +95,9 @@ bool EatAction::Execute(Event event)
         else
             delay = 20000.0f * (100 - p) / 100.0f;
 
+        botAI->CastSpell(24707, bot);
         botAI->SetNextCheckDelay(delay);
-        
-        bot->AddAura(24707, bot);
+
         return true;
     }
 
@@ -106,11 +105,11 @@ bool EatAction::Execute(Event event)
 }
 
 bool EatAction::isUseful()
-{ 
-    return UseItemAction::isUseful() && AI_VALUE2(uint8, "health", "self target") < 85;
+{
+    return UseItemAction::isUseful() && AI_VALUE2(uint8, "health", "self target") < sPlayerbotAIConfig->lowHealth;
 }
 
 bool EatAction::isPossible()
 {
-    return !bot->IsInCombat() && (sPlayerbotAIConfig->freeFood || UseItemAction::isPossible());
+    return sPlayerbotAIConfig->freeFood || UseItemAction::isPossible();
 }

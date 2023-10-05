@@ -6,11 +6,10 @@
 #define _PLAYERBOT_DPSROGUESTRATEGY_H
 
 #include "CombatStrategy.h"
-#include "MeleeCombatStrategy.h"
 
 class PlayerbotAI;
 
-class DpsRogueStrategy : public MeleeCombatStrategy
+class DpsRogueStrategy : public CombatStrategy
 {
     public:
         DpsRogueStrategy(PlayerbotAI* botAI);
@@ -18,7 +17,6 @@ class DpsRogueStrategy : public MeleeCombatStrategy
         void InitTriggers(std::vector<TriggerNode*>& triggers) override;
         std::string const getName() override { return "dps"; }
         NextAction** getDefaultActions() override;
-        uint32 GetType() const override { return MeleeCombatStrategy::GetType() | STRATEGY_TYPE_DPS; }
 };
 
 class StealthedRogueStrategy : public Strategy

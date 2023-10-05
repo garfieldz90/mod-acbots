@@ -158,7 +158,6 @@ class CastCleansingTotemAction : public CastTotemAction
 {
     public:
         CastCleansingTotemAction(PlayerbotAI* botAI) : CastTotemAction(botAI, "cleansing totem") { }
-		virtual bool isUseful();
 };
 
 class CastFlametongueTotemAction : public CastTotemAction
@@ -292,13 +291,13 @@ class CastCleanseSpiritDiseaseOnPartyAction : public CurePartyMemberAction
 class CastFlameShockAction : public CastDebuffSpellAction
 {
     public:
-        CastFlameShockAction(PlayerbotAI* botAI) : CastDebuffSpellAction(botAI, "flame shock", true) { }
+        CastFlameShockAction(PlayerbotAI* botAI) : CastDebuffSpellAction(botAI, "flame shock") { }
 };
 
 class CastEarthShockAction : public CastDebuffSpellAction
 {
     public:
-        CastEarthShockAction(PlayerbotAI* botAI) : CastDebuffSpellAction(botAI, "earth shock", true) { }
+        CastEarthShockAction(PlayerbotAI* botAI) : CastDebuffSpellAction(botAI, "earth shock") { }
 };
 
 class CastFrostShockAction : public CastSnareSpellAction
@@ -343,69 +342,30 @@ class CastWindShearOnEnemyHealerAction : public CastSpellOnEnemyHealerAction
         CastWindShearOnEnemyHealerAction(PlayerbotAI* botAI) : CastSpellOnEnemyHealerAction(botAI, "wind shear") { }
 };
 
-// class CastCurePoisonAction : public CastCureSpellAction
-// {
-//     public:
-//         CastCurePoisonAction(PlayerbotAI* botAI) : CastCureSpellAction(botAI, "cure poison") { }
-// };
-
-// class CastCurePoisonOnPartyAction : public CurePartyMemberAction
-// {
-//     public:
-//         CastCurePoisonOnPartyAction(PlayerbotAI* botAI) : CurePartyMemberAction(botAI, "cure poison", DISPEL_POISON) { }
-// };
-
-// class CastCureDiseaseAction : public CastCureSpellAction
-// {
-//     public:
-//         CastCureDiseaseAction(PlayerbotAI* botAI) : CastCureSpellAction(botAI, "cure disease") { }
-// };
-
-// class CastCureDiseaseOnPartyAction : public CurePartyMemberAction
-// {
-//     public:
-//         CastCureDiseaseOnPartyAction(PlayerbotAI* botAI) : CurePartyMemberAction(botAI, "cure disease", DISPEL_DISEASE) { }
-
-//         std::string const getName() override { return "cure disease on party"; }
-// };
-
-class CastLavaBurstAction : public CastSpellAction
+class CastCurePoisonAction : public CastCureSpellAction
 {
     public:
-        CastLavaBurstAction(PlayerbotAI* ai) : CastSpellAction(ai, "lava burst") {}
+        CastCurePoisonAction(PlayerbotAI* botAI) : CastCureSpellAction(botAI, "cure poison") { }
 };
 
-class CastEarthShieldOnMainTankAction : public BuffOnMainTankAction
-{
-	public:
-		CastEarthShieldOnMainTankAction(PlayerbotAI* ai) : BuffOnMainTankAction(ai, "earth shield", false) {}
-};
-
-class CastTotemOfWrathAction : public CastTotemAction
+class CastCurePoisonOnPartyAction : public CurePartyMemberAction
 {
     public:
-        CastTotemOfWrathAction(PlayerbotAI* ai) : CastTotemAction(ai, "totem of wrath") {}
-        virtual std::string const GetTargetName() override { return "self target"; }
-		virtual bool isUseful() override { return CastTotemAction::isUseful(); }
+        CastCurePoisonOnPartyAction(PlayerbotAI* botAI) : CurePartyMemberAction(botAI, "cure poison", DISPEL_POISON) { }
 };
 
-class CastFireElementalTotemAction : public CastTotemAction
+class CastCureDiseaseAction : public CastCureSpellAction
 {
     public:
-        CastFireElementalTotemAction(PlayerbotAI* ai) : CastTotemAction(ai, "fire elemental totem") {}
-        virtual std::string const GetTargetName() override { return "self target"; }
-		virtual bool isUseful() override { return CastTotemAction::isUseful(); }
+        CastCureDiseaseAction(PlayerbotAI* botAI) : CastCureSpellAction(botAI, "cure disease") { }
 };
 
-class CastWrathOfAirTotemAction : public CastTotemAction
+class CastCureDiseaseOnPartyAction : public CurePartyMemberAction
 {
-	public:
-		CastWrathOfAirTotemAction(PlayerbotAI* ai) : CastTotemAction(ai, "wrath of air totem") {}
+    public:
+        CastCureDiseaseOnPartyAction(PlayerbotAI* botAI) : CurePartyMemberAction(botAI, "cure disease", DISPEL_DISEASE) { }
+
+        std::string const getName() override { return "cure disease on party"; }
 };
 
-class CastShamanisticRageAction : public CastBuffSpellAction
-{
-	public:
-		CastShamanisticRageAction(PlayerbotAI* ai) : CastBuffSpellAction(ai, "shamanistic rage") {}
-};
 #endif

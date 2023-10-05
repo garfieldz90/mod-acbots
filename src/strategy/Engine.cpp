@@ -261,8 +261,7 @@ bool Engine::DoNextAction(Unit* unit, uint32 depth, bool minimal)
         lastRelevance = 0.0f;
         PushDefaultActions();
 
-        // prevent the delay after pushing default actions
-        if (queue.Peek() && depth < 1 && !minimal)
+        if (queue.Peek() && depth < 2)
             return DoNextAction(unit, depth + 1, minimal);
     }
 
@@ -459,7 +458,7 @@ bool Engine::HasStrategy(std::string const name)
 
 void Engine::ProcessTriggers(bool minimal)
 {
-    std::unordered_map<Trigger*, Event> fires;
+    std::map<Trigger*, Event> fires;
     for (std::vector<TriggerNode*>::iterator i = triggers.begin(); i != triggers.end(); i++)
     {
         TriggerNode* node = *i;
@@ -546,7 +545,7 @@ std::vector<std::string> Engine::GetStrategies()
         result.push_back(i->first);
     }
 
-    return result;
+    return std::move(result);
 }
 
 void Engine::PushAgain(ActionNode* actionNode, float relevance, Event event)
@@ -615,10 +614,6 @@ bool Engine::ListenAndExecute(Action* action, Event event)
 
 void Engine::LogAction(char const* format, ...)
 {
-    Player* bot = botAI->GetBot();
-    if (sPlayerbotAIConfig->logInGroupOnly && (!bot->GetGroup() || !botAI->HasRealPlayerMaster()) && !testMode)
-        return;
-
     char buf[1024];
 
     va_list ap;
@@ -638,13 +633,17 @@ void Engine::LogAction(char const* format, ...)
     if (testMode)
     {
         FILE* file = fopen("test.log", "a");
-        fprintf(file, "'%s'", buf);
+        fprintf(file, "'{}'", buf);
         fprintf(file, "\n");
         fclose(file);
     }
     else
     {
-        LOG_DEBUG("playerbots",  "{} {}", bot->GetName().c_str(), buf);
+        Player* bot = botAI->GetBot();
+        if (sPlayerbotAIConfig->logInGroupOnly && !bot->GetGroup())
+            return;
+
+        LOG_INFO("playerbots",  "{} {}", bot->GetName().c_str(), buf);
     }
 }
 
@@ -678,7 +677,7 @@ void Engine::LogValues()
         return;
 
     Player* bot = botAI->GetBot();
-    if (sPlayerbotAIConfig->logInGroupOnly && (!bot->GetGroup() || !botAI->HasRealPlayerMaster()))
+    if (sPlayerbotAIConfig->logInGroupOnly && !bot->GetGroup())
         return;
 
     std::string const text = botAI->GetAiObjectContext()->FormatValues();

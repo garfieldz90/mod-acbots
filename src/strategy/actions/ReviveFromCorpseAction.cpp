@@ -9,7 +9,6 @@
 #include "MapMgr.h"
 #include "Playerbots.h"
 #include "PlayerbotFactory.h"
-#include "RandomPlayerbotMgr.h"
 #include "ServerFacade.h"
 
 bool ReviveFromCorpseAction::Execute(Event event)
@@ -55,7 +54,7 @@ bool ReviveFromCorpseAction::Execute(Event event)
         }
     }
 
-    LOG_DEBUG("playerbots", "Bot {} {}:{} <{}> revives at body", bot->GetGUID().ToString().c_str(), bot->GetTeamId() == TEAM_ALLIANCE ? "A" : "H", bot->getLevel(), bot->GetName().c_str());
+    LOG_INFO("playerbots", "Bot {} {}:{} <{}> revives at body", bot->GetGUID().ToString().c_str(), bot->GetTeamId() == TEAM_ALLIANCE ? "A" : "H", bot->getLevel(), bot->GetName().c_str());
 
     bot->GetMotionMaster()->Clear();
     bot->StopMoving();
@@ -90,11 +89,10 @@ bool FindCorpseAction::Execute(Event event)
     {
         if (dCount >= 5)
         {
-            LOG_INFO("playerbots", "Bot {} {}:{} <{}>: died too many times, was revived and teleported",
+            LOG_INFO("playerbots", "Bot {} {}:{} <{}>: died too many times and was sent to an inn",
                 bot->GetGUID().ToString().c_str(), bot->GetTeamId() == TEAM_ALLIANCE ? "A" : "H", bot->getLevel(), bot->GetName().c_str());
             context->GetValue<uint32>("death count")->Set(0);
-            // sRandomPlayerbotMgr->RandomTeleportForLevel(bot);
-            sRandomPlayerbotMgr->Revive(bot);
+            sRandomPlayerbotMgr->RandomTeleportForRpg(bot);
             return true;
         }
     }

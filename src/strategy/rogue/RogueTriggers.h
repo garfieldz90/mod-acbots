@@ -21,25 +21,24 @@ class SliceAndDiceTrigger : public BuffTrigger
         SliceAndDiceTrigger(PlayerbotAI* botAI) : BuffTrigger(botAI, "slice and dice") { }
 };
 
-class AdrenalineRushTrigger : public BoostTrigger
+class AdrenalineRushTrigger : public BuffTrigger
 {
     public:
-        AdrenalineRushTrigger(PlayerbotAI* botAI) : BoostTrigger(botAI, "adrenaline rush") { }
+        AdrenalineRushTrigger(PlayerbotAI* botAI) : BuffTrigger(botAI, "adrenaline rush") { }
 
-        // bool isPossible();
+        bool isPossible();
 };
 
 class RuptureTrigger : public DebuffTrigger
 {
     public:
-        RuptureTrigger(PlayerbotAI* botAI) : DebuffTrigger(botAI, "rupture", 1, true) { }
+        RuptureTrigger(PlayerbotAI* botAI) : DebuffTrigger(botAI, "rupture") { }
 };
 
 class ExposeArmorTrigger : public DebuffTrigger
 {
     public:
         ExposeArmorTrigger(PlayerbotAI* botAI) : DebuffTrigger(botAI, "expose armor") { }
-        virtual bool IsActive() override;
 };
 
 class KickInterruptEnemyHealerSpellTrigger : public InterruptEnemyHealerTrigger
@@ -91,26 +90,6 @@ class SprintTrigger : public BuffTrigger
 
         bool IsPossible();
         bool IsActive() override;
-};
-
-class MainHandWeaponNoEnchantTrigger : public BuffTrigger
-{
-    public:
-        MainHandWeaponNoEnchantTrigger(PlayerbotAI* ai) : BuffTrigger(ai, "main hand", 1) {}
-        virtual bool IsActive();
-};
-
-class OffHandWeaponNoEnchantTrigger : public BuffTrigger
-{
-    public:
-        OffHandWeaponNoEnchantTrigger(PlayerbotAI* ai) : BuffTrigger(ai, "off hand", 1) {}
-        virtual bool IsActive();
-};
-
-class TricksOfTheTradeOnMainTankTrigger : public BuffOnMainTankTrigger
-{
-    public:
-        TricksOfTheTradeOnMainTankTrigger(PlayerbotAI* ai) : BuffOnMainTankTrigger(ai, "tricks of the trade", true) {}
 };
 
 #endif

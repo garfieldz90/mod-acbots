@@ -47,7 +47,6 @@ class PlayerbotHolder : public PlayerbotAIBase
         uint32 GetAccountId(std::string const name);
         uint32 GetAccountId(ObjectGuid guid);
         std::string const ListBots(Player* master);
-        std::string const LookupBots(Player* master);
 
     protected:
         virtual void OnBotLoginInternal(Player* const bot) = 0;

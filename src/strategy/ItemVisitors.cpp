@@ -85,8 +85,3 @@ bool FindItemUsageVisitor::Accept(ItemTemplate const* proto)
 
     return false;
 }
-
-bool FindUsableNamedItemVisitor::Accept(ItemTemplate const* proto)
-{
-    return proto && !proto->Name1.empty() && strstri(proto->Name1.c_str(), name.c_str());
-}

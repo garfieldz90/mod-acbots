@@ -4,7 +4,6 @@
 
 #include "LeaveGroupAction.h"
 #include "Event.h"
-#include "PlayerbotAIConfig.h"
 #include "Playerbots.h"
 
 bool LeaveGroupAction::Execute(Event event)
@@ -154,9 +153,5 @@ bool LeaveFarAwayAction::isUseful()
     if (abs(int32(master->getLevel() - bot->getLevel())) > 4)
         return true;
 
-    if (bot->GetMapId() != master->GetMapId() || bot->GetDistance2d(master) >= 2 * sPlayerbotAIConfig->rpgDistance) {
-        return true;
-    }
-    
     return false;
 }

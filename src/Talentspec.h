@@ -32,7 +32,6 @@ class TalentSpec
         };
 
         TalentSpec() { };
-        virtual ~TalentSpec() { }
         TalentSpec(uint32 classMask);
         TalentSpec(TalentSpec* base, std::string const link);
         TalentSpec(Player* bot);

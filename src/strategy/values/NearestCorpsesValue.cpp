@@ -15,7 +15,7 @@ class AnyDeadUnitInObjectRangeCheck
         WorldObject const& GetFocusObject() const { return *i_obj; }
         bool operator()(Unit* u)
         {
-            return !u->IsAlive();
+            return !u->IsAlive() && i_obj->IsWithinDistInMap(u, i_range);
         }
 
     private:

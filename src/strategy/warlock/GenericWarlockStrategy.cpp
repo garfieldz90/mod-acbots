@@ -31,26 +31,25 @@ class GenericWarlockStrategyActionNodeFactory : public NamedObjectFactory<Action
         }
 };
 
-GenericWarlockStrategy::GenericWarlockStrategy(PlayerbotAI* botAI) : RangedCombatStrategy(botAI)
+GenericWarlockStrategy::GenericWarlockStrategy(PlayerbotAI* botAI) : CombatStrategy(botAI)
 {
     actionNodeFactories.Add(new GenericWarlockStrategyActionNodeFactory());
 }
 
 NextAction** GenericWarlockStrategy::getDefaultActions()
 {
-    return NextAction::array(0, nullptr);
+    return NextAction::array(0, new NextAction("shoot", 10.0f), nullptr);
 }
 
 void GenericWarlockStrategy::InitTriggers(std::vector<TriggerNode*>& triggers)
 {
-    RangedCombatStrategy::InitTriggers(triggers);
+    CombatStrategy::InitTriggers(triggers);
 
-    // triggers.push_back(new TriggerNode("shadow trance", NextAction::array(0, new NextAction("shadow bolt", 20.0f), nullptr)));
-    // triggers.push_back(new TriggerNode("low health", NextAction::array(0, new NextAction("drain life", 40.0f), nullptr)));
-    triggers.push_back(new TriggerNode("low mana", NextAction::array(0, new NextAction("life tap", ACTION_EMERGENCY + 5), nullptr)));
+    triggers.push_back(new TriggerNode("shadow trance", NextAction::array(0, new NextAction("shadow bolt", 20.0f), nullptr)));
+    triggers.push_back(new TriggerNode("low health", NextAction::array(0, new NextAction("drain life", 40.0f), nullptr)));
+    triggers.push_back(new TriggerNode("medium mana", NextAction::array(0, new NextAction("life tap", ACTION_EMERGENCY + 5), nullptr)));
 	triggers.push_back(new TriggerNode("target critical health", NextAction::array(0, new NextAction("drain soul", 30.0f), nullptr)));
-    // triggers.push_back(new TriggerNode("immolate", NextAction::array(0, new NextAction("immolate", 13.0f), new NextAction("conflagrate", 13.0f), nullptr)));
-    // triggers.push_back(new TriggerNode("enemy too close for spell", NextAction::array(0, new NextAction("flee", 49.0f), NULL)));
+    triggers.push_back(new TriggerNode("immolate", NextAction::array(0, new NextAction("immolate", 13.0f), new NextAction("conflagrate", 13.0f), nullptr)));
 }
 
 void WarlockBoostStrategy::InitTriggers(std::vector<TriggerNode*>& triggers)

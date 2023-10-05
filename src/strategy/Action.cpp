@@ -4,7 +4,6 @@
 
 #include "Action.h"
 #include "Playerbots.h"
-#include "Timer.h"
 
 uint32 NextAction::size(NextAction** actions)
 {
@@ -102,11 +101,11 @@ Unit* Action::GetTarget()
 }
 
 ActionBasket::ActionBasket(ActionNode* action, float relevance, bool skipPrerequisites, Event event) :
-    action(action), relevance(relevance), skipPrerequisites(skipPrerequisites), event(event), created(getMSTime())
+    action(action), relevance(relevance), skipPrerequisites(skipPrerequisites), event(event), created(time(nullptr))
 {
 }
 
-bool ActionBasket::isExpired(uint32 msecs)
+bool ActionBasket::isExpired(time_t secs)
 {
-    return getMSTime() - created >= msecs;
+    return time(nullptr) - created >= secs;
 }

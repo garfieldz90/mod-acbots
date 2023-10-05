@@ -3,7 +3,6 @@
  */
 
 #include "AoeHealValues.h"
-#include "PlayerbotAIConfig.h"
 #include "Playerbots.h"
 
 uint8 AoeHealValue::Calculate()
@@ -19,8 +18,6 @@ uint8 AoeHealValue::Calculate()
     	range = sPlayerbotAIConfig->mediumHealth;
     else if (qualifier == "critical")
     	range = sPlayerbotAIConfig->criticalHealth;
-	else if (qualifier == "almost full")
-		range = sPlayerbotAIConfig->almostFullHealth;
 
     uint8 count = 0;
 	Group::MemberSlotList const& groupSlot = group->GetMemberSlots();

@@ -25,26 +25,20 @@ class SpellstoneTrigger : public BuffTrigger
         bool IsActive() override;
 };
 
-// DEBUFF_CHECKISOWNER_TRIGGER(CurseOfAgonyTrigger, "curse of agony");
-class CurseOfAgonyTrigger : public DebuffTrigger
-{
-    public:
-        CurseOfAgonyTrigger(PlayerbotAI* botAI) : DebuffTrigger(botAI, "curse of agony", 1, true, 20.0f) { }
-};
-
-DEBUFF_CHECKISOWNER_TRIGGER(CorruptionTrigger, "corruption");
-DEBUFF_CHECKISOWNER_TRIGGER(SiphonLifeTrigger, "siphon life");
+DEBUFF_TRIGGER(CurseOfAgonyTrigger, "curse of agony");
+DEBUFF_TRIGGER(CorruptionTrigger, "corruption");
+DEBUFF_TRIGGER(SiphonLifeTrigger, "siphon life");
 
 class CorruptionOnAttackerTrigger : public DebuffOnAttackerTrigger
 {
     public:
-        CorruptionOnAttackerTrigger(PlayerbotAI* botAI) : DebuffOnAttackerTrigger(botAI, "corruption", true) { }
+        CorruptionOnAttackerTrigger(PlayerbotAI* botAI) : DebuffOnAttackerTrigger(botAI, "corruption") { }
 };
 
 class CastCurseOfAgonyOnAttackerTrigger : public DebuffOnAttackerTrigger
 {
     public:
-        CastCurseOfAgonyOnAttackerTrigger(PlayerbotAI* botAI) : DebuffOnAttackerTrigger(botAI, "curse of agony", true, 20.0f) { }
+        CastCurseOfAgonyOnAttackerTrigger(PlayerbotAI* botAI) : DebuffOnAttackerTrigger(botAI, "curse of agony") { }
 };
 
 class SiphonLifeOnAttackerTrigger : public DebuffOnAttackerTrigger
@@ -53,14 +47,7 @@ class SiphonLifeOnAttackerTrigger : public DebuffOnAttackerTrigger
         SiphonLifeOnAttackerTrigger(PlayerbotAI* botAI) : DebuffOnAttackerTrigger(botAI, "siphon life") { }
 };
 
-DEBUFF_CHECKISOWNER_TRIGGER(ImmolateTrigger, "immolate");
-
-class ImmolateOnAttackerTrigger : public DebuffOnAttackerTrigger
-{
-public:
-    ImmolateOnAttackerTrigger(PlayerbotAI* ai) : DebuffOnAttackerTrigger(ai, "immolate") {}
-    virtual bool IsActive();
-};
+DEBUFF_TRIGGER(ImmolateTrigger, "immolate");
 
 class ShadowTranceTrigger : public HasAuraTrigger
 {
@@ -118,41 +105,4 @@ class AmplifyCurseTrigger : public BuffTrigger
         AmplifyCurseTrigger(PlayerbotAI* botAI) : BuffTrigger(botAI, "amplify curse") { }
 };
 
-class UnstableAfflictionTrigger : public DebuffTrigger // SpellTrigger
-{
-    public:
-        UnstableAfflictionTrigger(PlayerbotAI* ai) : DebuffTrigger(ai, "unstable affliction", 1, true) {}
-        bool IsActive() override;
-};
-
-class UnstableAfflictionOnAttackerTrigger : public DebuffOnAttackerTrigger
-{
-    public:
-        UnstableAfflictionOnAttackerTrigger(PlayerbotAI* ai) : DebuffOnAttackerTrigger(ai, "unstable affliction", true) {}
-        bool IsActive() override;
-};
-
-class HauntTrigger : public DebuffTrigger
-{
-    public:
-        HauntTrigger(PlayerbotAI* ai) : DebuffTrigger(ai, "haunt", 1, true, 0) {}
-};
-
-class DecimationTrigger : public HasAuraTrigger
-{
-    public:
-        DecimationTrigger(PlayerbotAI* ai) : HasAuraTrigger(ai, "decimation") {}
-};
-
-class MoltenCoreTrigger : public HasAuraTrigger
-{
-    public:
-        MoltenCoreTrigger(PlayerbotAI* ai) : HasAuraTrigger(ai, "molten core") {}
-};
-
-class MetamorphosisTrigger : public BoostTrigger
-{
-    public:
-        MetamorphosisTrigger(PlayerbotAI* ai) : BoostTrigger(ai, "metamorphosis") {}
-};
 #endif

@@ -8,7 +8,6 @@
 #include "Playerbots.h"
 #include "ServerFacade.h"
 #include "CreatureAI.h"
-#include "Unit.h"
 
 bool AttackAction::Execute(Event event)
 {
@@ -41,7 +40,7 @@ bool AttackMyTargetAction::Execute(Event event)
     return result;
 }
 
-bool AttackAction::Attack(Unit* target, bool with_pet /*true*/)
+bool AttackAction::Attack(Unit* target)
 {
     if (bot->GetMotionMaster()->GetCurrentMovementGeneratorType() == FLIGHT_MOTION_TYPE || bot->HasUnitState(UNIT_STATE_IN_FLIGHT))
     {
@@ -94,40 +93,28 @@ bool AttackAction::Attack(Unit* target, bool with_pet /*true*/)
     }
 
     ObjectGuid guid = target->GetGUID();
-    bot->SetSelection(target->GetGUID());
+    bot->SetTarget(target->GetGUID());
 
     Unit* oldTarget = context->GetValue<Unit*>("current target")->Get();
     context->GetValue<Unit*>("old target")->Set(oldTarget);
 
     context->GetValue<Unit*>("current target")->Set(target);
     context->GetValue<LootObjectStack*>("available loot")->Get()->Add(guid);
-    
-    /* prevent pet dead immediately in group */
-    if (bot->GetGroup() && !target->IsInCombat()) {
-        with_pet = false;
-    }
+
     if (Pet* pet = bot->GetPet())
     {
-        if (with_pet) {
-            pet->SetReactState(REACT_DEFENSIVE);
-            pet->SetTarget(target->GetGUID());
-            pet->GetCharmInfo()->SetIsCommandAttack(true);
-            pet->AI()->AttackStart(target);
-            // pet->SetReactState(REACT_DEFENSIVE);
-        } else {
+        if (CreatureAI* creatureAI = ((Creature*)pet)->AI())
+        {
             pet->SetReactState(REACT_PASSIVE);
-            pet->GetCharmInfo()->SetIsCommandFollow(true);
-            pet->GetCharmInfo()->IsReturning();
-            // pet->GetMotionMaster()->MoveFollow(bot, PET_FOLLOW_DIST, pet->GetFollowAngle());
+            pet->GetCharmInfo()->SetCommandState(COMMAND_ATTACK);
+            creatureAI->AttackStart(target);
         }
     }
 
-    if (IsMovingAllowed() && !bot->HasInArc(CAST_ANGLE_IN_FRONT, target)) {
-        sServerFacade->SetFacingTo(bot, target);
-    }
-        // bot->SetFacingToObject(target);
+    if (IsMovingAllowed() && !bot->HasInArc(CAST_ANGLE_IN_FRONT, target))
+        bot->SetFacingToObject(target);
 
-    bool attacked = bot->Attack(target, true);
+    bool attacked = bot->Attack(target, !botAI->IsRanged(bot));
     botAI->ChangeEngine(BOT_STATE_COMBAT);
 
     return attacked;

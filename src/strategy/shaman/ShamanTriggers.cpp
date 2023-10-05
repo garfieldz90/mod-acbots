@@ -33,13 +33,12 @@ bool ShamanWeaponTrigger::IsActive()
 
 bool ShockTrigger::IsActive()
 {
-    return SpellTrigger::IsActive() && !botAI->HasAura("flame shock", GetTarget(), false, true) &&
-        !botAI->HasAura("frost shock", GetTarget(), false, true);
+    return SpellTrigger::IsActive() && !botAI->HasAnyAuraOf(GetTarget(), "frost shock", "earth shock", "flame shock", nullptr);
 }
 
 bool TotemTrigger::IsActive()
 {
-    return AI_VALUE(uint8, "attacker count") >= attackerCount && !AI_VALUE2(bool, "has totem", name) && !botAI->HasAura(name, bot);
+    return AI_VALUE(uint8, "attacker count") >= attackerCount && !AI_VALUE2(bool, "has totem", name);
 }
 
 bool ManaSpringTotemTrigger::IsActive()
@@ -65,23 +64,4 @@ bool WaterWalkingOnPartyTrigger::IsActive()
 bool WaterBreathingOnPartyTrigger::IsActive()
 {
     return BuffOnPartyTrigger::IsActive() && AI_VALUE2(bool, "swimming", "self target");
-}
-
-bool NoFireTotemTrigger::IsActive()
-{
-    return !AI_VALUE2(bool, "has totem", "magma totem") &&
-        !AI_VALUE2(bool, "has totem", "flametongue totem") &&
-        !AI_VALUE2(bool, "has totem", "searing totem") &&
-        !AI_VALUE2(bool, "has totem", "fire elemental totem") &&
-        !AI_VALUE2(bool, "has totem", "frost resistance totem") && 
-        !AI_VALUE2(bool, "has totem", "totem of wrath");
-}
-
-bool NoWaterTotemTrigger::IsActive()
-{
-    return !AI_VALUE2(bool, "has totem", "fire resistance totem") &&
-        !AI_VALUE2(bool, "has totem", "mana tide totem") &&
-        !AI_VALUE2(bool, "has totem", "cleansing totem") &&
-        !AI_VALUE2(bool, "has totem", "mana spring totem") &&
-        !AI_VALUE2(bool, "has totem", "healing stream totem");
 }

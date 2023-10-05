@@ -6,11 +6,10 @@
 #define _PLAYERBOT_GENERICWARLOCKSTRATEGY_H
 
 #include "CombatStrategy.h"
-#include "RangedCombatStrategy.h"
 
 class PlayerbotAI;
 
-class GenericWarlockStrategy : public RangedCombatStrategy
+class GenericWarlockStrategy : public CombatStrategy
 {
     public:
         GenericWarlockStrategy(PlayerbotAI* botAI);

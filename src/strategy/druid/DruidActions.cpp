@@ -45,8 +45,3 @@ NextAction** CastRebirthAction::getPrerequisites()
 {
     return NextAction::merge(NextAction::array(0, new NextAction("caster form"), nullptr), ResurrectPartyMemberAction::getPrerequisites());
 }
-
-bool CastRebirthAction::isUseful()
-{
-    return CastSpellAction::isUseful() && AI_VALUE2(float, "distance", GetTargetName()) <= sPlayerbotAIConfig->spellDistance;
-}

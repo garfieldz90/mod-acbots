@@ -6,7 +6,6 @@
 #define _PLAYERBOT_ROGUEACTIONS_H
 
 #include "GenericSpellActions.h"
-#include "UseItemAction.h"
 
 class PlayerbotAI;
 
@@ -102,52 +101,16 @@ class CastAdrenalineRushAction : public CastBuffSpellAction
 		CastAdrenalineRushAction(PlayerbotAI* botAI) : CastBuffSpellAction(botAI, "adrenaline rush") { }
 };
 
-class CastKillingSpreeAction : public CastMeleeSpellAction
+class CastKillingSpreeAction : public CastBuffSpellAction
 {
 	public:
-		CastKillingSpreeAction(PlayerbotAI* botAI) : CastMeleeSpellAction(botAI, "killing spree") { }
+		CastKillingSpreeAction(PlayerbotAI* botAI) : CastBuffSpellAction(botAI, "killing spree") { }
 };
 
 class CastKickOnEnemyHealerAction : public CastSpellOnEnemyHealerAction
 {
     public:
         CastKickOnEnemyHealerAction(PlayerbotAI* botAI) : CastSpellOnEnemyHealerAction(botAI, "kick") { }
-};
-
-class EnvenomAction : public CastMeleeSpellAction
-{
-	public:
-		EnvenomAction(PlayerbotAI* ai) : CastMeleeSpellAction(ai, "envenom") {}
-};
-
-class CastTricksOfTheTradeOnMainTankAction : public BuffOnMainTankAction
-{
-	public:
-		CastTricksOfTheTradeOnMainTankAction(PlayerbotAI* ai) : BuffOnMainTankAction(ai, "tricks of the trade", true) {}
-		virtual bool isUseful() override;
-};
-
-class UseDeadlyPoisonAction : public UseItemAction
-{
-	public:
-		UseDeadlyPoisonAction(PlayerbotAI* ai) : UseItemAction(ai, "Deadly Poison") {}
-		virtual bool Execute(Event event) override;
-		virtual bool isPossible() override;
-};
-
-class UseInstantPoisonAction : public UseItemAction
-{
-	public:
-		UseInstantPoisonAction(PlayerbotAI* ai) : UseItemAction(ai, "Instant Poison") {}
-		virtual bool Execute(Event event) override;
-		virtual bool isPossible() override;
-};
-
-class FanOfKnivesAction : public CastMeleeSpellAction
-{
-	public:
-		FanOfKnivesAction(PlayerbotAI* ai) : CastMeleeSpellAction(ai, "fan of knives") {}
-		ActionThreatType getThreatType() override { return ActionThreatType::Aoe; }
 };
 
 #endif

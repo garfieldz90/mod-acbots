@@ -61,7 +61,6 @@ class CastFlamestrikeAction : public CastSpellAction
 {
     public:
         CastFlamestrikeAction(PlayerbotAI* botAI) : CastSpellAction(botAI, "flamestrike") { }
-        ActionThreatType getThreatType() override { return ActionThreatType::Aoe; }
 };
 
 class CastFrostNovaAction : public CastSpellAction
@@ -196,7 +195,7 @@ class CastSpellstealAction : public CastSpellAction
 class CastLivingBombAction : public CastDebuffSpellAction
 {
 	public:
-	    CastLivingBombAction(PlayerbotAI* botAI) : CastDebuffSpellAction(botAI, "living bomb", true) { }
+	    CastLivingBombAction(PlayerbotAI* botAI) : CastDebuffSpellAction(botAI, "living bomb") { }
 };
 
 class CastDragonsBreathAction : public CastSpellAction
@@ -241,12 +240,6 @@ class CastPresenceOfMindAction : public CastBuffSpellAction
 {
     public:
         CastPresenceOfMindAction(PlayerbotAI* botAI) : CastBuffSpellAction(botAI, "presence of mind") { }
-};
-
-class CastMirrorImageAction : public CastBuffSpellAction
-{
-    public:
-        CastMirrorImageAction(PlayerbotAI* botAI) : CastBuffSpellAction(botAI, "mirror image") {}
 };
 
 #endif

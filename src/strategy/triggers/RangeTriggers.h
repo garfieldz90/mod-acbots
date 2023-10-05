@@ -67,13 +67,15 @@ class EnemyOutOfMeleeTrigger : public OutOfRangeTrigger
     public:
         EnemyOutOfMeleeTrigger(PlayerbotAI* botAI) : OutOfRangeTrigger(botAI, "enemy out of melee range", sPlayerbotAIConfig->meleeDistance) { }
 
-        // bool IsActive() override;
+        bool IsActive() override;
 };
 
 class EnemyOutOfSpellRangeTrigger : public OutOfRangeTrigger
 {
     public:
         EnemyOutOfSpellRangeTrigger(PlayerbotAI* botAI);
+
+        bool IsActive() override;
 };
 
 class PartyMemberToHealOutOfSpellRangeTrigger : public OutOfRangeTrigger

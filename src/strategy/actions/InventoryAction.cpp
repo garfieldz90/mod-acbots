@@ -222,12 +222,6 @@ std::vector<Item*> InventoryAction::parseItems(std::string const text, IterateIt
         FindFoodVisitor visitor(bot, 59, text == "conjured drink" || text == "conjured water");
         IterateItems(&visitor, ITERATE_ITEMS_IN_BAGS);
         found.insert(visitor.GetResult().begin(), visitor.GetResult().end());
-
-        if (found.empty()) {
-            FindFoodVisitor visitor(bot, 11);
-            IterateItems(&visitor, ITERATE_ITEMS_IN_BAGS);
-            found.insert(visitor.GetResult().begin(), visitor.GetResult().end());
-        }
     }
 
     if (text == "mana potion")
@@ -288,10 +282,6 @@ std::vector<Item*> InventoryAction::parseItems(std::string const text, IterateIt
         IterateItems(&visitor, ITERATE_ITEMS_IN_BAGS);
         found.insert(visitor.GetResult().begin(), visitor.GetResult().end());
     }
-
-    FindUsableNamedItemVisitor visitor(bot, text);
-    IterateItems(&visitor, ITERATE_ITEMS_IN_BAGS);
-    found.insert(visitor.GetResult().begin(), visitor.GetResult().end());
 
     uint32 quality = chat->parseItemQuality(text);
     if (quality != MAX_ITEM_QUALITY)

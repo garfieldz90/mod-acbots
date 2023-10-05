@@ -17,7 +17,7 @@ class AttackAction : public MovementAction
         bool Execute(Event event) override;
 
     protected:
-        bool Attack(Unit* target, bool with_pet = true);
+        bool Attack(Unit* target);
 };
 
 class AttackMyTargetAction : public AttackAction

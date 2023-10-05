@@ -5,26 +5,19 @@
 #ifndef _PLAYERBOT_HUNTERACTIONS_H
 #define _PLAYERBOT_HUNTERACTIONS_H
 
-#include "AiObject.h"
 #include "GenericSpellActions.h"
 
 class PlayerbotAI;
 class Unit;
 
-// BEGIN_RANGED_SPELL_ACTION(CastHuntersMarkAction, "hunter's mark")
-// END_SPELL_ACTION()
+BEGIN_RANGED_SPELL_ACTION(CastHuntersMarkAction, "hunter's mark")
+END_SPELL_ACTION()
 
-class CastHuntersMarkAction : public CastDebuffSpellAction
-{
-    public:
-        CastHuntersMarkAction(PlayerbotAI* botAI) : CastDebuffSpellAction(botAI, "hunter's mark") { }
-        bool isUseful() override;
-};
 class CastAutoShotAction : public CastSpellAction
 {
     public:
         CastAutoShotAction(PlayerbotAI* botAI) : CastSpellAction(botAI, "auto shot") { }
-        ActionThreatType getThreatType() override { return ActionThreatType::None; }
+
         bool isUseful() override;
 };
 
@@ -53,10 +46,11 @@ BEGIN_RANGED_SPELL_ACTION(CastMultiShotAction, "multi-shot")
 END_SPELL_ACTION()
 
 BEGIN_RANGED_SPELL_ACTION(CastVolleyAction, "volley")
-    ActionThreatType getThreatType() override { return ActionThreatType::Aoe; }
 END_SPELL_ACTION()
 
-DEBUFF_CHECKISOWNER_ACTION(CastSerpentStingAction, "serpent sting");
+BEGIN_RANGED_SPELL_ACTION(CastSerpentStingAction, "serpent sting")
+bool isUseful() override;
+END_SPELL_ACTION()
 
 BEGIN_RANGED_SPELL_ACTION(CastWyvernStingAction, "wyvern sting")
 END_SPELL_ACTION()
@@ -68,25 +62,10 @@ END_SPELL_ACTION()
 BEGIN_RANGED_SPELL_ACTION(CastScorpidStingAction, "scorpid sting")
 END_SPELL_ACTION()
 
-BEGIN_RANGED_SPELL_ACTION(CastSteadyShotAction, "steady shot")
-END_SPELL_ACTION()
-
-BEGIN_RANGED_SPELL_ACTION(CastKillShotAction, "kill shot")
-END_SPELL_ACTION()
-
-BEGIN_RANGED_SPELL_ACTION(CastTranquilizingShotAction, "tranquilizing shot")
-END_SPELL_ACTION()
-
 class CastAspectOfTheHawkAction : public CastBuffSpellAction
 {
 	public:
 		CastAspectOfTheHawkAction(PlayerbotAI* botAI) : CastBuffSpellAction(botAI, "aspect of the hawk") { }
-};
-
-class CastAspectOfTheDragonhawkAction : public CastBuffSpellAction
-{
-public:
-    CastAspectOfTheDragonhawkAction(PlayerbotAI* botAI) : CastBuffSpellAction(botAI, "aspect of the dragonhawk") {}
 };
 
 class CastAspectOfTheWildAction : public CastBuffSpellAction
@@ -162,7 +141,7 @@ class CastReadinessAction : public CastBuffSpellAction
 class CastBlackArrow : public CastDebuffSpellAction
 {
 	public:
-		CastBlackArrow(PlayerbotAI* botAI) : CastDebuffSpellAction(botAI, "black arrow", true) { }
+		CastBlackArrow(PlayerbotAI* botAI) : CastDebuffSpellAction(botAI, "black arrow") { }
 };
 
 class CastFreezingTrap : public CastDebuffSpellAction
@@ -193,7 +172,7 @@ class CastRaptorStrikeAction : public CastMeleeSpellAction
 class CastSerpentStingOnAttackerAction : public CastDebuffSpellOnAttackerAction
 {
     public:
-        CastSerpentStingOnAttackerAction(PlayerbotAI* botAI) : CastDebuffSpellOnAttackerAction(botAI, "serpent sting", true) { }
+        CastSerpentStingOnAttackerAction(PlayerbotAI* botAI) : CastDebuffSpellOnAttackerAction(botAI, "serpent sting") { }
 };
 
 class FeedPetAction : public Action
@@ -225,9 +204,4 @@ class CastScareBeastCcAction : public CastSpellAction
         bool Execute(Event event) override;
 };
 
-class CastMisdirectionOnMainTankAction : public BuffOnMainTankAction
-{
-    public:
-        CastMisdirectionOnMainTankAction(PlayerbotAI* ai) : BuffOnMainTankAction(ai, "misdirection", true) {}
-};
 #endif

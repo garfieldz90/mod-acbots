@@ -22,7 +22,6 @@ class ChatTriggerContext : public NamedObjectContext<Trigger>
             creators["reputation"] = &ChatTriggerContext::reputation;
             creators["log"] = &ChatTriggerContext::log;
             creators["los"] = &ChatTriggerContext::los;
-            creators["aura"] = &ChatTriggerContext::aura;
             creators["drop"] = &ChatTriggerContext::drop;
             creators["share"] = &ChatTriggerContext::share;
             creators["q"] = &ChatTriggerContext::q;
@@ -111,9 +110,6 @@ class ChatTriggerContext : public NamedObjectContext<Trigger>
             creators["guild remove"] = &ChatTriggerContext::guild_remove;
             creators["guild leave"] = &ChatTriggerContext::guild_leave;
             creators["rtsc"] = &ChatTriggerContext::rtsc;
-            creators["drink"] = &ChatTriggerContext::drink;
-            creators["naxx"] = &ChatTriggerContext::naxx;
-            creators["bwl"] = &ChatTriggerContext::bwl;
         }
 
     private:
@@ -191,7 +187,6 @@ class ChatTriggerContext : public NamedObjectContext<Trigger>
         static Trigger* reputation(PlayerbotAI* botAI) { return new ChatCommandTrigger(botAI, "reputation"); }
         static Trigger* log(PlayerbotAI* botAI) { return new ChatCommandTrigger(botAI, "log"); }
         static Trigger* los(PlayerbotAI* botAI) { return new ChatCommandTrigger(botAI, "los"); }
-        static Trigger* aura(PlayerbotAI* ai) { return new ChatCommandTrigger(ai, "aura"); }
         static Trigger* loot_all(PlayerbotAI* botAI) { return new ChatCommandTrigger(botAI, "add all loot"); }
         static Trigger* release(PlayerbotAI* botAI) { return new ChatCommandTrigger(botAI, "release"); }
         static Trigger* reset_ai(PlayerbotAI* botAI) { return new ChatCommandTrigger(botAI, "reset botAI"); }
@@ -205,9 +200,6 @@ class ChatTriggerContext : public NamedObjectContext<Trigger>
         static Trigger* guild_remove(PlayerbotAI* botAI) { return new ChatCommandTrigger(botAI, "guild remove"); }
         static Trigger* guild_leave(PlayerbotAI* botAI) { return new ChatCommandTrigger(botAI, "guild leave"); }
         static Trigger* rtsc(PlayerbotAI* botAI) { return new ChatCommandTrigger(botAI, "rtsc"); }
-        static Trigger* drink(PlayerbotAI* ai) { return new ChatCommandTrigger(ai, "drink"); }
-        static Trigger* naxx(PlayerbotAI* ai) { return new ChatCommandTrigger(ai, "naxx"); }
-        static Trigger* bwl(PlayerbotAI* ai) { return new ChatCommandTrigger(ai, "bwl"); }
 };
 
 #endif

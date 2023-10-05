@@ -6,7 +6,6 @@
 #define _PLAYERBOT_SHAMANTRIGGERS_H
 
 #include "CureTriggers.h"
-#include "GenericTriggers.h"
 #include "SharedDefines.h"
 
 class PlayerbotAI;
@@ -14,7 +13,7 @@ class PlayerbotAI;
 class ShamanWeaponTrigger : public BuffTrigger
 {
     public:
-        ShamanWeaponTrigger(PlayerbotAI* botAI) : BuffTrigger(botAI, "rockbiter weapon", 2 * 2000) { }
+        ShamanWeaponTrigger(PlayerbotAI* botAI) : BuffTrigger(botAI, "rockbiter weapon", 2) { }
 
         bool IsActive() override;
 
@@ -112,7 +111,7 @@ class WaterWalkingTrigger : public BuffTrigger
 class WaterBreathingTrigger : public BuffTrigger
 {
     public:
-        WaterBreathingTrigger(PlayerbotAI* botAI) : BuffTrigger(botAI, "water breathing", 5 * 2000) { }
+        WaterBreathingTrigger(PlayerbotAI* botAI) : BuffTrigger(botAI, "water breathing", 5) { }
 
         bool IsActive() override;
 };
@@ -120,7 +119,7 @@ class WaterBreathingTrigger : public BuffTrigger
 class WaterWalkingOnPartyTrigger : public BuffOnPartyTrigger
 {
     public:
-        WaterWalkingOnPartyTrigger(PlayerbotAI* botAI) : BuffOnPartyTrigger(botAI, "water walking on party", 2 * 2000) { }
+        WaterWalkingOnPartyTrigger(PlayerbotAI* botAI) : BuffOnPartyTrigger(botAI, "water walking on party", 2) { }
 
         bool IsActive() override;
 };
@@ -128,7 +127,7 @@ class WaterWalkingOnPartyTrigger : public BuffOnPartyTrigger
 class WaterBreathingOnPartyTrigger : public BuffOnPartyTrigger
 {
     public:
-        WaterBreathingOnPartyTrigger(PlayerbotAI* botAI) : BuffOnPartyTrigger(botAI, "water breathing on party", 2 * 2000) { }
+        WaterBreathingOnPartyTrigger(PlayerbotAI* botAI) : BuffOnPartyTrigger(botAI, "water breathing on party", 2) { }
 
         bool IsActive() override;
 };
@@ -172,7 +171,7 @@ class PartyMemberCleanseSpiritDiseaseTrigger : public PartyMemberNeedCureTrigger
 class ShockTrigger : public DebuffTrigger
 {
     public:
-        ShockTrigger(PlayerbotAI* botAI) : DebuffTrigger(botAI, "earth shock", 1, true) { }
+        ShockTrigger(PlayerbotAI* botAI) : DebuffTrigger(botAI, "earth shock") { }
 
         bool IsActive() override;
 };
@@ -195,10 +194,10 @@ class BloodlustTrigger : public BoostTrigger
         BloodlustTrigger(PlayerbotAI* botAI) : BoostTrigger(botAI, "bloodlust") { }
 };
 
-class MaelstromWeaponTrigger : public HasAuraStackTrigger
+class MaelstromWeaponTrigger : public HasAuraTrigger
 {
     public:
-        MaelstromWeaponTrigger(PlayerbotAI* botAI) : HasAuraStackTrigger(botAI, "maelstrom weapon", 5) { }
+        MaelstromWeaponTrigger(PlayerbotAI* botAI) : HasAuraTrigger(botAI, "maelstrom weapon") { }
 };
 
 class WindShearInterruptEnemyHealerSpellTrigger : public InterruptEnemyHealerTrigger
@@ -231,32 +230,4 @@ class PartyMemberCureDiseaseTrigger : public PartyMemberNeedCureTrigger
         PartyMemberCureDiseaseTrigger(PlayerbotAI* botAI) : PartyMemberNeedCureTrigger(botAI, "cure disease", DISPEL_DISEASE) { }
 };
 
-class NoFireTotemTrigger : public Trigger {
-    public:
-        NoFireTotemTrigger(PlayerbotAI* ai) : Trigger(ai, "no fire totem") {}
-        virtual bool IsActive() override;
-};
-
-class NoWaterTotemTrigger : public Trigger {
-    public:
-        NoWaterTotemTrigger(PlayerbotAI* ai) : Trigger(ai, "no water totem") {}
-        virtual bool IsActive() override;
-};
-
-class EarthShieldOnMainTankTrigger : public BuffOnMainTankTrigger
-{
-    public:
-        EarthShieldOnMainTankTrigger(PlayerbotAI* botAI) : BuffOnMainTankTrigger(botAI, "earth shield", false) {}
-};
-
-class FlameShockTrigger : public DebuffTrigger {
-    public:
-        FlameShockTrigger(PlayerbotAI* ai) : DebuffTrigger(ai, "flame shock", 1, true) {}
-};
-
-class WrathOfAirTotemTrigger : public TotemTrigger
-{
-	public:
-		WrathOfAirTotemTrigger(PlayerbotAI* ai) : TotemTrigger(ai, "wrath of air totem") {}
-};
 #endif

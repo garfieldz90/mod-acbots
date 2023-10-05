@@ -14,20 +14,11 @@ class FindTargetForTankStrategy : public FindNonCcTargetStrategy
         void CheckAttacker(Unit* creature, ThreatMgr* threatMgr) override
         {
             Player* bot = botAI->GetBot();
+            if (IsCcTarget(creature))
+                return;
+
             float threat = threatMgr->GetThreat(bot);
-            if (!result) {
-                minThreat = threat;
-                result = creature;
-            }
-            // neglect if victim is main tank, or no victim (for untauntable target)
-            if (threatMgr->getCurrentVictim()) {
-                // float max_threat = threatMgr->GetThreat(threatMgr->getCurrentVictim()->getTarget());
-                Unit* victim = threatMgr->getCurrentVictim()->getTarget();
-                if (victim && victim->ToPlayer() && botAI->IsMainTank(victim->ToPlayer())) {
-                    return;
-                }
-            }
-            if (minThreat >= threat)
+            if (!result || (minThreat - threat) > 0.1f)
             {
                 minThreat = threat;
                 result = creature;

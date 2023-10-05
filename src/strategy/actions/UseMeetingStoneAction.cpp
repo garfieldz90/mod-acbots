@@ -73,12 +73,6 @@ bool SummonAction::Execute(Event event)
     Player* master = GetMaster();
     if (!master)
         return false;
-    
-    if (Pet* pet = bot->GetPet()) {
-        pet->SetReactState(REACT_PASSIVE);
-        pet->GetCharmInfo()->SetIsCommandFollow(true);
-        pet->GetCharmInfo()->IsReturning();
-    }
 
     if (master->GetSession()->GetSecurity() >= SEC_PLAYER)
         return Teleport(master, bot);
@@ -175,7 +169,6 @@ bool SummonAction::Teleport(Player* summoner, Player* player)
                 if (bot->isDead() && botAI->GetMaster()->IsAlive())
                 {
                     bot->ResurrectPlayer(1.0f, false);
-                    bot->DurabilityRepairAll(false, 1.0f, false);
                     botAI->TellMasterNoFacing("I live, again!");
                 }
 

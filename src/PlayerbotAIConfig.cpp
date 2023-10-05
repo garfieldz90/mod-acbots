@@ -20,8 +20,9 @@ void LoadList(std::string const value, T& list)
     for (std::vector<std::string>::iterator i = ids.begin(); i != ids.end(); i++)
     {
         uint32 id = atoi((*i).c_str());
-        // if (!id)
-        //     continue;
+        if (!id)
+            continue;
+
         list.push_back(id);
     }
 }
@@ -101,7 +102,7 @@ bool PlayerbotAIConfig::Initialize()
     LoadList<std::vector<uint32>>(randomBotMapsAsString, randomBotMaps);
     LoadList<std::vector<uint32>>(sConfigMgr->GetOption<std::string>("AiPlayerbot.RandomBotQuestItems", "6948,5175,5176,5177,5178,16309,12382,13704,11000"), randomBotQuestItems);
     LoadList<std::vector<uint32>>(sConfigMgr->GetOption<std::string>("AiPlayerbot.RandomBotSpellIds", "54197"), randomBotSpellIds);
-    LoadList<std::vector<uint32>>(sConfigMgr->GetOption<std::string>("AiPlayerbot.PvpProhibitedZoneIds", "2255,656,2361,2362,2363,976,35,2268,3425,392,541,1446,3828,3712,3738,3565,3539,3623,4152,3988,4658,4284,4418,4436,4275,4323,4395"), pvpProhibitedZoneIds);
+    LoadList<std::vector<uint32>>(sConfigMgr->GetOption<std::string>("AiPlayerbot.PvpProhibitedZoneIds", "2255,656,2361,2362,2363,976,35,2268,3425,392,541,1446,3828,3712,3738,3565,3539,3623,4152,3988,4658,4284,4418,4436,4275,4323"), pvpProhibitedZoneIds);
     LoadList<std::vector<uint32>>(sConfigMgr->GetOption<std::string>("AiPlayerbot.RandomBotQuestIds", "7848,3802,5505,6502,7761"), randomBotQuestIds);
 
     botAutologin = sConfigMgr->GetOption<bool>("AiPlayerbot.BotAutologin", false);
@@ -119,8 +120,6 @@ bool PlayerbotAIConfig::Initialize()
     maxRandomBotChangeStrategyTime = sConfigMgr->GetOption<int32>("AiPlayerbot.MaxRandomBotChangeStrategyTime", 2 * HOUR);
     minRandomBotReviveTime = sConfigMgr->GetOption<int32>("AiPlayerbot.MinRandomBotReviveTime", MINUTE);
     maxRandomBotReviveTime = sConfigMgr->GetOption<int32>("AiPlayerbot.MaxRandomBotReviveTime", 5 * MINUTE);
-    minRandomBotTeleportInterval = sConfigMgr->GetOption<int32>("AiPlayerbot.MinRandomBotTeleportInterval", 1 * HOUR);
-    maxRandomBotTeleportInterval = sConfigMgr->GetOption<int32>("AiPlayerbot.MaxRandomBotTeleportInterval", 5 * HOUR);
     randomBotTeleportDistance = sConfigMgr->GetOption<int32>("AiPlayerbot.RandomBotTeleportDistance", 100);
     randomBotsPerInterval = sConfigMgr->GetOption<int32>("AiPlayerbot.RandomBotsPerInterval", MINUTE);
     minRandomBotsPriceChangeInterval = sConfigMgr->GetOption<int32>("AiPlayerbot.MinRandomBotsPriceChangeInterval", 2 * HOUR);
@@ -137,8 +136,7 @@ bool PlayerbotAIConfig::Initialize()
     randomBotMinLevel = sConfigMgr->GetOption<int32>("AiPlayerbot.RandomBotMinLevel", 1);
     randomBotMaxLevel = sConfigMgr->GetOption<int32>("AiPlayerbot.RandomBotMaxLevel", 80);
     randomBotLoginAtStartup = sConfigMgr->GetOption<bool>("AiPlayerbot.RandomBotLoginAtStartup", true);
-    randomBotTeleLowerLevel = sConfigMgr->GetOption<int32>("AiPlayerbot.RandomBotTeleLowerLevel", 3);
-    randomBotTeleHigherLevel = sConfigMgr->GetOption<int32>("AiPlayerbot.RandomBotTeleHigherLevel", 1);
+    randomBotTeleLevel = sConfigMgr->GetOption<int32>("AiPlayerbot.RandomBotTeleLevel", 5);
     openGoSpell = sConfigMgr->GetOption<int32>("AiPlayerbot.OpenGoSpell", 6477);
 
     randomChangeMultiplier = sConfigMgr->GetOption<float>("AiPlayerbot.RandomChangeMultiplier", 1.0);
@@ -157,24 +155,6 @@ bool PlayerbotAIConfig::Initialize()
     LOG_INFO("server.loading", "---------------------------------------");
     LOG_INFO("server.loading", "          Loading TalentSpecs          ");
     LOG_INFO("server.loading", "---------------------------------------");
-
-    for (uint32 cls = 1; cls < MAX_CLASSES; ++cls)
-    {
-        for (uint32 spec = 0; spec < 3; ++spec)
-        {
-            std::ostringstream os; 
-            os << "AiPlayerbot.RandomClassSpecProbability." << cls << "." << spec;
-            specProbability[cls][spec] = sConfigMgr->GetOption<uint32>(os.str().c_str(), 33);
-            os.str("");
-            os.clear();
-            os << "AiPlayerbot.DefaultTalentsOrder." << cls << "." << spec;
-            std::string temp_talents_order = sConfigMgr->GetOption<std::string>(os.str().c_str(), "");
-            defaultTalentsOrder[cls][spec] = ParseTempTalentsOrder(temp_talents_order);
-            if (defaultTalentsOrder[cls][spec].size() > 0) {
-                sLog->outMessage("playerbot", LOG_LEVEL_INFO, "default talents order for cls %d spec %d loaded.", cls, spec);
-            }
-        }
-    }
 
     for (uint32 cls = 1; cls < MAX_CLASSES; ++cls)
     {
@@ -295,9 +275,6 @@ bool PlayerbotAIConfig::Initialize()
     enableGreet = sConfigMgr->GetOption<bool>("AiPlayerbot.EnableGreet", true);
     disableRandomLevels = sConfigMgr->GetOption<bool>("AiPlayerbot.DisableRandomLevels", false);
     randomBotRandomPassword = sConfigMgr->GetOption<bool>("AiPlayerbot.RandomBotRandomPassword", true);
-    downgradeMaxLevelBot = sConfigMgr->GetOption<bool>("AiPlayerbot.DowngradeMaxLevelBot", true);
-    equipmentPersistence = sConfigMgr->GetOption<bool>("AiPlayerbot.EquipmentPersistence", false);
-    equipmentPersistenceLevel = sConfigMgr->GetOption<int32>("AiPlayerbot.EquipmentPersistenceLevel", 80);
     playerbotsXPrate = sConfigMgr->GetOption<int32>("AiPlayerbot.KillXPRate", 1);
     botActiveAlone = sConfigMgr->GetOption<int32>("AiPlayerbot.BotActiveAlone", 10);
     randombotsWalkingRPG = sConfigMgr->GetOption<bool>("AiPlayerbot.RandombotsWalkingRPG", false);
@@ -308,17 +285,14 @@ bool PlayerbotAIConfig::Initialize()
     randomBotPreQuests = sConfigMgr->GetOption<bool>("AiPlayerbot.PreQuests", true);
 
     // SPP automation
-    freeMethodLoot = sConfigMgr->GetOption<bool>("AiPlayerbot.FreeMethodLoot", false);
     autoPickReward = sConfigMgr->GetOption<std::string>("AiPlayerbot.AutoPickReward", "yes");
     autoEquipUpgradeLoot = sConfigMgr->GetOption<bool>("AiPlayerbot.AutoEquipUpgradeLoot", true);
     syncQuestWithPlayer = sConfigMgr->GetOption<bool>("AiPlayerbot.SyncQuestWithPlayer", false);
     syncQuestForPlayer = sConfigMgr->GetOption<bool>("AiPlayerbot.SyncQuestForPlayer", false);
     autoTrainSpells = sConfigMgr->GetOption<std::string>("AiPlayerbot.AutoTrainSpells", "yes");
-    autoPickTalents = sConfigMgr->GetOption<bool>("AiPlayerbot.AutoPickTalents", true);
-    autoUpgradeEquip = sConfigMgr->GetOption<bool>("AiPlayerbot.AutoUpgradeEquip", false);
-    autoLearnTrainerSpells = sConfigMgr->GetOption<bool>("AiPlayerbot.AutoLearnTrainerSpells", true);
+    autoPickTalents = sConfigMgr->GetOption<std::string>("AiPlayerbot.AutoPickTalents", "full");
+    autoLearnTrainerSpells = sConfigMgr->GetOption<bool>("AiPlayerbot.AutoLearnTrainerSpells", false);
     autoLearnQuestSpells = sConfigMgr->GetOption<bool>("AiPlayerbot.AutoLearnQuestSpells", false);
-    autoTeleportForLevel = sConfigMgr->GetOption<bool>("AiPlayerbot.AutoTeleportForLevel", false); 
     autoDoQuests = sConfigMgr->GetOption<bool>("AiPlayerbot.AutoDoQuests", false);
     syncLevelWithPlayers = sConfigMgr->GetOption<bool>("AiPlayerbot.SyncLevelWithPlayers", false);
     freeFood = sConfigMgr->GetOption<bool>("AiPlayerbot.FreeFood", true);
@@ -516,38 +490,4 @@ void PlayerbotAIConfig::loadWorldBuf(uint32 factionId1, uint32 classId1, uint32 
             worldBuffs.push_back(wb);
         }
     }
-}
-
-static std::vector<std::string> split(const std::string &str, const std::string &pattern)
-{
-    std::vector<std::string> res;
-    if(str == "")
-        return res;
-    //在字符串末尾也加入分隔符，方便截取最后一段
-    std::string strs = str + pattern;
-    size_t pos = strs.find(pattern);
-
-    while(pos != strs.npos)
-    {
-        std::string temp = strs.substr(0, pos);
-        res.push_back(temp);
-        //去掉已分割的字符串,在剩下的字符串中进行分割
-        strs = strs.substr(pos+1, strs.size());
-        pos = strs.find(pattern);
-    }
-
-    return res;
-}
-
-std::vector<std::vector<uint32>> PlayerbotAIConfig::ParseTempTalentsOrder(std::string temp_talents_order) {
-    std::vector<std::vector<uint32>> res;
-    std::vector<std::string> pieces = split(temp_talents_order, ",");
-    for (std::string piece : pieces) {
-        uint32 tab, row, col, lvl;
-        if (sscanf(piece.c_str(), "%u-%u-%u-%u", &tab, &row, &col, &lvl) == -1) {
-            break;
-        }
-        res.push_back({tab, row, col, lvl});
-    }
-    return res;
 }

@@ -80,7 +80,7 @@ class NamedObjectFactory
             for (typename std::map<std::string, ActionCreator>::iterator it = creators.begin(); it != creators.end(); it++)
                 keys.insert(it->first);
 
-            return keys;
+            return std::move(keys);
         }
 };
 
@@ -142,7 +142,7 @@ class NamedObjectContext : public NamedObjectFactory<T>
             for (typename std::map<std::string, T*>::iterator it = created.begin(); it != created.end(); it++)
                 keys.insert(it->first);
 
-            return keys;
+            return std::move(keys);
         }
 
     protected:
@@ -214,7 +214,7 @@ class NamedObjectContextList
                 return supported;
             }
 
-            return std::set<std::string>();
+            return std::move(std::set<std::string>());
         }
 
         std::set<std::string> supports()
@@ -228,7 +228,7 @@ class NamedObjectContextList
                     result.insert(*j);
             }
 
-            return result;
+            return std::move(result);
         }
 
         std::set<std::string> GetCreated()
@@ -242,7 +242,7 @@ class NamedObjectContextList
                     result.insert(*j);
             }
 
-            return result;
+            return std::move(result);
         }
 
     private:

@@ -6,17 +6,11 @@
 #define _PLAYERBOT_HUNTERTRIGGERS_H
 
 #include "GenericTriggers.h"
-#include "Trigger.h"
-#include "CureTriggers.h"
 
 class PlayerbotAI;
 
-class HunterNoStingsActiveTrigger : public DebuffTrigger
-{
-    public:
-        HunterNoStingsActiveTrigger(PlayerbotAI* botAI): DebuffTrigger(botAI, "no stings") {}
-        bool IsActive() override;
-};
+BEGIN_TRIGGER(HunterNoStingsActiveTrigger, Trigger)
+END_TRIGGER()
 
 class AutoShotTrigger : public Trigger
 {
@@ -30,7 +24,6 @@ class HunterAspectOfTheHawkTrigger : public BuffTrigger
 {
     public:
         HunterAspectOfTheHawkTrigger(PlayerbotAI* botAI) : BuffTrigger(botAI, "aspect of the hawk") { }
-        bool IsActive() override;
 };
 
 class HunterAspectOfTheWildTrigger : public BuffTrigger
@@ -64,13 +57,13 @@ END_TRIGGER()
 class BlackArrowTrigger : public DebuffTrigger
 {
     public:
-        BlackArrowTrigger(PlayerbotAI* botAI) : DebuffTrigger(botAI, "black arrow", 1, true) { }
+        BlackArrowTrigger(PlayerbotAI* botAI) : DebuffTrigger(botAI, "black arrow") { }
 };
 
-class HuntersMarkTrigger : public DebuffOnBossTrigger
+class HuntersMarkTrigger : public DebuffTrigger
 {
     public:
-        HuntersMarkTrigger(PlayerbotAI* botAI) : DebuffOnBossTrigger(botAI, "hunter's mark") { }
+        HuntersMarkTrigger(PlayerbotAI* botAI) : DebuffTrigger(botAI, "hunter's mark") { }
 };
 
 class FreezingTrapTrigger : public HasCcTargetTrigger
@@ -94,7 +87,7 @@ class TrueshotAuraTrigger : public BuffTrigger
 class SerpentStingOnAttackerTrigger : public DebuffOnAttackerTrigger
 {
     public:
-        SerpentStingOnAttackerTrigger(PlayerbotAI* botAI) : DebuffOnAttackerTrigger(botAI, "serpent sting", true) { }
+        SerpentStingOnAttackerTrigger(PlayerbotAI* botAI) : DebuffOnAttackerTrigger(botAI, "serpent sting") { }
 };
 
 BEGIN_TRIGGER(HunterPetNotHappy, Trigger)
@@ -150,15 +143,4 @@ class SwitchToMeleeTrigger : public Trigger
         bool IsActive() override;
 };
 
-class MisdirectionOnMainTankTrigger : public BuffOnMainTankTrigger
-{
-    public:
-        MisdirectionOnMainTankTrigger(PlayerbotAI* ai) : BuffOnMainTankTrigger(ai, "misdirection", true) {}
-};
-
-class TargetRemoveEnrageTrigger : public TargetAuraDispelTrigger
-{
-    public:
-        TargetRemoveEnrageTrigger(PlayerbotAI* ai) : TargetAuraDispelTrigger(ai, "tranquilizing shot", DISPEL_ENRAGE) {}
-};
 #endif

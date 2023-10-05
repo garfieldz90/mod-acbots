@@ -109,14 +109,14 @@ class ActionBasket
         bool isSkipPrerequisites() { return skipPrerequisites; }
         void AmendRelevance(float k) { relevance *= k; }
         void setRelevance(float relevance) { this->relevance = relevance; }
-        bool isExpired(uint32 msecs);
+        bool isExpired(time_t secs);
 
 	private:
 		ActionNode* action;
 		float relevance;
         bool skipPrerequisites;
         Event event;
-        uint32 created;
+        time_t created;
 };
 
 #endif

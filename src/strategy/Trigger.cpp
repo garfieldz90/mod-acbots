@@ -5,10 +5,9 @@
 #include "Trigger.h"
 #include "Event.h"
 #include "Playerbots.h"
-#include "Timer.h"
 
 Trigger::Trigger(PlayerbotAI* botAI, std::string const name, int32 checkInterval) :
-    AiNamedObject(botAI, name), checkInterval(checkInterval == 1 ? 1 : (checkInterval < 100 ? checkInterval * 1000 : checkInterval)), lastCheckTime(0)
+    AiNamedObject(botAI, name), checkInterval(checkInterval), lastCheckTime(time(nullptr) - rand() % checkInterval)
 {
 }
 
@@ -39,7 +38,7 @@ bool Trigger::needCheck()
     if (checkInterval < 2)
         return true;
 
-    uint32 now = getMSTime();
+    time_t now = time(nullptr);
     if (!lastCheckTime || now - lastCheckTime >= checkInterval)
     {
         lastCheckTime = now;

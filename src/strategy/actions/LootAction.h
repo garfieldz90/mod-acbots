@@ -19,7 +19,6 @@ class LootAction : public MovementAction
         LootAction(PlayerbotAI* botAI) : MovementAction(botAI, "loot") { }
 
         bool Execute(Event event) override;
-        bool isUseful() override;
 };
 
 class OpenLootAction : public MovementAction
