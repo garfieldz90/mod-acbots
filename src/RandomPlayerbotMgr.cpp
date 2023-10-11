@@ -1749,7 +1749,7 @@ void RandomPlayerbotMgr::OnPlayerLogout(Player* player)
 
 void RandomPlayerbotMgr::OnBotLoginInternal(Player * const bot)
 {
-    LOG_INFO("playerbots", "{}/{} Bot {} logged in", playerBots.size(), sRandomPlayerbotMgr->GetMaxAllowedBotCount(), bot->GetName().c_str());
+    LOG_INFO("playerbots", "{}/{} Bot {} logged in", playerBots.size() + 1, sRandomPlayerbotMgr->GetMaxAllowedBotCount(), bot->GetName().c_str());
 }
 
 void RandomPlayerbotMgr::OnPlayerLogin(Player* player)
