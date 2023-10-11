@@ -1550,7 +1550,7 @@ uint32 RandomItemMgr::CalculateSingleStatWeight(uint8 playerclass, uint8 spec, s
             statWeight = i->weight * value;
             if (statWeight)
                 // LOG_INFO("playerbots", "stat: {}, val: {}, weight: {}, total: {}, class: {}, spec: {}",
-                    stat, value, i->weight, statWeight, playerclass, m_weightScales[playerclass][spec].info.name);
+                    // stat, value, i->weight, statWeight, playerclass, m_weightScales[playerclass][spec].info.name);
             return statWeight;
         }
     }
@@ -1667,9 +1667,9 @@ uint32 RandomItemMgr::GetUpgrade(Player* player, std::string spec, uint8 slot, u
     {
         oldStatWeight = itemInfoCache[itemId].weights[specId];
 
-        if (oldStatWeight)
+        // if (oldStatWeight)
             // LOG_INFO("playerbots", "Old Item: {}, weight: {}", itemId, oldStatWeight);
-        else
+        // else
             // LOG_INFO("playerbots", "Old item has no stat weight");
     }
 
@@ -1791,9 +1791,9 @@ std::vector<uint32> RandomItemMgr::GetUpgradeList(Player* player, std::string sp
     {
         oldStatWeight = itemInfoCache[itemId].weights[specId];
 
-        if (oldStatWeight)
+        // if (oldStatWeight)
             // LOG_INFO("playerbots", "Old Item: {}, weight: {}", itemId, oldStatWeight);
-        else
+        // else
             // LOG_INFO("playerbots", "Old item has no stat weight");
     }
 
@@ -2122,7 +2122,7 @@ void RandomItemMgr::BuildEquipCache()
                         equipCache[key] = items;
 
                         // LOG_INFO("playerbots", "Equipment cache for class: {}, level {}, slot {}, quality {}: {} items",
-                                class_, level, slot, quality, items.size());
+                                // class_, level, slot, quality, items.size());
                     }
                 }
             }
