@@ -59,7 +59,7 @@ bool FollowChatShortcutAction::Execute(Event event)
 
         if (moved)
         {
-            botAI->TellMaster("Following");
+            botAI->TellMaster(BOT_TEXT1("following"));
             return true;
         }
     }
@@ -80,7 +80,7 @@ bool FollowChatShortcutAction::Execute(Event event)
     }
     */
 
-    botAI->TellMaster("Following");
+    botAI->TellMaster(BOT_TEXT1("following"));
     return true;
 }
 

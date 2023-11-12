@@ -15,25 +15,26 @@ bool ReachTargetAction::Execute(Event event)
 
     UpdateMovementState();
 
-    float combatReach = bot->GetCombatReach() + target->GetCombatReach() + 4.0f / 3.0f;
-    if (distance < std::max(5.0f, combatReach))
-    {
-        return ChaseTo(target, 0.0f, GetFollowAngle());
-    }
-    else
-    {
-        combatReach = bot->GetCombatReach() + target->GetCombatReach();
-        bool inLos = bot->IsWithinLOSInMap(target);
-        bool  isFriend  = bot->IsFriendlyTo(target);
-        float chaseDist = inLos ? distance : isFriend ? distance / 2 : distance;
-        return ChaseTo(target, chaseDist - sPlayerbotAIConfig->contactDistance, bot->GetAngle(target));
-    }
+    // float combatReach = bot->GetCombatReach() + target->GetCombatReach() + 4.0f / 3.0f;
+    // if (distance < std::max(5.0f, combatReach))
+    // {
+    //     return ChaseTo(target, 0.0f, GetFollowAngle());
+    // }
+    // else
+    // {
+    //     combatReach = bot->GetCombatReach() + target->GetCombatReach();
+    //     bool inLos = bot->IsWithinLOSInMap(target);
+    //     bool  isFriend  = bot->IsFriendlyTo(target);
+    //     float chaseDist = inLos ? distance : isFriend ? distance / 2 : distance;
+    //     return ChaseTo(target, chaseDist - sPlayerbotAIConfig->contactDistance, bot->GetAngle(target));
+    // }
+    return MoveTo(target, distance);
 }
 
 bool ReachTargetAction::isUseful()
 {
     // do not move while casting
-    if (bot->IsNonMeleeSpellCast(true))
+    if (bot->GetCurrentSpell(CURRENT_CHANNELED_SPELL) != nullptr) 
         return false;
 
     Unit* target = AI_VALUE(Unit*, GetTargetName());

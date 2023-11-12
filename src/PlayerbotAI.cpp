@@ -171,6 +171,7 @@ PlayerbotAI::~PlayerbotAI()
 
 void PlayerbotAI::UpdateAI(uint32 elapsed, bool minimal)
 {
+    PlayerbotAI* botAI = GET_PLAYERBOT_AI(bot);
     if (nextAICheckDelay > elapsed)
         nextAICheckDelay -= elapsed;
     else
@@ -237,7 +238,7 @@ void PlayerbotAI::UpdateAI(uint32 elapsed, bool minimal)
     if (currentSpell && currentSpell->getState() == SPELL_STATE_CASTING && currentSpell->GetCastTime())
     {
         nextAICheckDelay = currentSpell->GetCastTime() + sPlayerbotAIConfig->reactDelay;
-
+        SetNextCheckDelay(nextAICheckDelay);
         if (!CanUpdateAI())
             return;
     }
@@ -838,7 +839,7 @@ int32 PlayerbotAI::CalculateGlobalCooldown(uint32 spellid)
         return 0;
 
     if (bot->HasSpellCooldown(spellid))
-        return sPlayerbotAIConfig->globalCoolDown;
+        return bot->GetSpellCooldownDelay(spellid);  
 
     return sPlayerbotAIConfig->reactDelay;
 }
@@ -1645,6 +1646,9 @@ bool PlayerbotAI::CanCastSpell(uint32 spellid, Unit* target, bool checkHasSpell,
     if (checkHasSpell && !bot->HasSpell(spellid))
         return false;
 
+    if (bot->GetCurrentSpell(CURRENT_CHANNELED_SPELL) != nullptr)
+        return false;
+
     if (bot->HasSpellCooldown(spellid))
         return false;
 
@@ -1909,7 +1913,7 @@ bool PlayerbotAI::CastSpell(uint32 spellId, Unit* target, Item* itemTarget)
         return false;
     }
 
-    Spell *spell = new Spell(bot, spellInfo, TRIGGERED_NONE);
+    Spell* spell = new Spell(bot, spellInfo, TRIGGERED_NONE);
 
     SpellCastTargets targets;
     if (spellInfo->Targets & TARGET_FLAG_ITEM)
@@ -1962,26 +1966,26 @@ bool PlayerbotAI::CastSpell(uint32 spellId, Unit* target, Item* itemTarget)
 
     if (bot->isMoving() && spell->GetCastTime())
     {
-        bot->StopMoving();
-//        SetNextCheckDelay(sPlayerbotAIConfig->globalCoolDown);
-//        spell->cancel();
-        //delete spell;
-//        return false;
+        // bot->StopMoving();
+        SetNextCheckDelay(sPlayerbotAIConfig->globalCoolDown);
+        spell->cancel();
+        delete spell;
+        return false;
     }
 
-    spell->prepare(&targets);
-    SpellCastResult spellSuccess = spell->CheckCast(true);
+    SpellCastResult spellSuccess = spell->prepare(&targets);
+    // SpellCastResult spellSuccess = spell->CheckCast(true);
 
-    if (spellInfo->Effects[0].Effect == SPELL_EFFECT_OPEN_LOCK || spellInfo->Effects[0].Effect == SPELL_EFFECT_SKINNING)
-    {
-        LootObject loot = *aiObjectContext->GetValue<LootObject>("loot target");
-        if (!loot.IsLootPossible(bot))
-        {
-            spell->cancel();
-            //delete spell;
-            return false;
-        }
-    }
+    // if (spellInfo->Effects[0].Effect == SPELL_EFFECT_OPEN_LOCK || spellInfo->Effects[0].Effect == SPELL_EFFECT_SKINNING)
+    // {
+    //     LootObject loot = *aiObjectContext->GetValue<LootObject>("loot target");
+    //     if (!loot.IsLootPossible(bot))
+    //     {
+    //         spell->cancel();
+    //         delete spell;
+    //         return false;
+    //     }
+    // }
 
     if (spellSuccess != SPELL_CAST_OK)
         return false;
@@ -2414,11 +2418,11 @@ void PlayerbotAI::WaitForSpellCast(Spell* spell)
 
     castTime = ceil(castTime);
 
-    uint32 globalCooldown = CalculateGlobalCooldown(spellInfo->Id);
-    if (castTime < globalCooldown)
-        castTime = globalCooldown;
+    // uint32 globalCooldown = CalculateGlobalCooldown(spellInfo->Id);
+    // if (castTime < globalCooldown)
+    //     castTime = globalCooldown;
 
-    SetNextCheckDelay(castTime + sPlayerbotAIConfig->reactDelay);
+    SetNextCheckDelay(castTime + 800);
 }
 
 void PlayerbotAI::InterruptSpell()

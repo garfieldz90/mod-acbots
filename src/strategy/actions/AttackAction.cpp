@@ -8,6 +8,7 @@
 #include "Playerbots.h"
 #include "ServerFacade.h"
 #include "CreatureAI.h"
+#include "Unit.h"
 
 bool AttackAction::Execute(Event event)
 {
@@ -105,9 +106,10 @@ bool AttackAction::Attack(Unit* target)
     {
         if (CreatureAI* creatureAI = ((Creature*)pet)->AI())
         {
-            pet->SetReactState(REACT_PASSIVE);
+            pet->SetReactState(REACT_DEFENSIVE);
             pet->GetCharmInfo()->SetCommandState(COMMAND_ATTACK);
             creatureAI->AttackStart(target);
+            pet->AI()->AttackStart(target);
         }
     }
 
