@@ -956,7 +956,7 @@ void RandomPlayerbotMgr::Revive(Player* player)
     SetEventValue(bot, "dead", 0, 0);
     SetEventValue(bot, "revive", 0, 0);
 
-    if (player->getDeathState() == CORPSE)
+    if (player->getDeathState() == DeathState::Corpse)
         RandomTeleport(player);
     else
     {
@@ -2285,7 +2285,7 @@ ObjectGuid const RandomPlayerbotMgr::GetBattleMasterGUID(Player* bot, Battlegrou
         if (area->team == 2 && bot->GetTeamId() == TEAM_HORDE)
             continue;
 
-        if (Bm->getDeathState() == DEAD)
+        if (Bm->getDeathState() == DeathState::Dead)
             continue;
 
         float dist2 = sServerFacade->GetDistance2d(bot, data->posX, data->posY);

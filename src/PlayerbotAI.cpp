@@ -873,7 +873,7 @@ void PlayerbotAI::ChangeEngine(BotState type)
                 LOG_DEBUG("playerbots",  "=== {} NON-COMBAT ===", bot->GetName().c_str());
                 break;
             case BOT_STATE_DEAD:
-                LOG_DEBUG("playerbots",  "=== {} DEAD ===", bot->GetName().c_str());
+                LOG_DEBUG("playerbots",  "=== {} DeathState::Dead ===", bot->GetName().c_str());
                 break;
         }
     }
